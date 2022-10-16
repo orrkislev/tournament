@@ -23,7 +23,7 @@ export default function AdminUserSelect() {
         readDoc('other', 'adminUsers').then(dd => {
             setAdminUsers(dd.users)
         })
-    }, [user])
+    }, [user, userData])
 
     const addUser = () => {
         const newUsers = [...adminUsers, 'user' + (adminUsers.length + 1)]
