@@ -26,8 +26,11 @@ export default function Answer() {
 
     useEffect(() => {
         if (user.email in taskData.data.answers) setText(taskData.data.answers[user.email])
-        else setText('')
-    }, [taskData.data, user.email])
+    }, [taskData.data])
+
+    useEffect(() => {
+        setText('')
+    }, [user.email])
 
     const save = async () => {
         taskData.saveAnswer(text)
