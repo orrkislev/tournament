@@ -72,7 +72,7 @@ export default function Home() {
 			})
 			setAnswers(docs);
 		});
-	}, [user])
+	}, [user, setUser, setOwnTasks, setAnswers])
 
 	const router = useRouter()
 	function gotoTask(id) {
