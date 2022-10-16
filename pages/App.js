@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import { MainContainer, Main } from '../styles/Styles';
 import { userDataAtom } from '../utils/atoms';
 import { auth } from '../utils/firebaseConfig';
-import Login from './login';
+import Login from './Login';
 
 export default function App(props) {
 
@@ -15,7 +15,7 @@ export default function App(props) {
 
     useEffect(() => {
         if (user) setUserData({ email: user.email, uid: user.uid, displayName: user.displayName })
-    }, [user])
+    }, [user, setUserData])
 
     if (!user && !userData.email) return <Login />
 

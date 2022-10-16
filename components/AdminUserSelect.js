@@ -19,7 +19,7 @@ export default function AdminUserSelect() {
 
     useEffect(() => {
         if (!adminEmails.includes(user.email)) return
-        if (!('origEmail' in userData)) setUserData({ ...userData, origEmail: userData.email })
+        if (!('origEmail' in userData)) setUserData({ ...userData, origEmail: user.email })
         readDoc('other', 'adminUsers').then(dd => {
             setAdminUsers(dd.users)
         })
@@ -45,7 +45,7 @@ export default function AdminUserSelect() {
             </Fab>
             <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
                 <div style={{ padding: '1em', display: 'flex', flexDirection: 'column' }}>
-                    <Button onClick={() => selectUser(userData.origEmail ?? '')}>{userData.displayName.split(' ')[0]}</Button>
+                    {userData.origEmail && <Button onClick={() => selectUser(userData.origEmail)}>{userData.displayName.split(' ')[0]}</Button>}
                     {adminUsers.map((user, i) => {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}

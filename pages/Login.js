@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useRecoilState } from 'recoil';
 import { userDataAtom } from '../utils/atoms';
