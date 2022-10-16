@@ -46,7 +46,6 @@ const ListItemText = styled.div`
 
 
 export default function Home() {
-	// const user = useRecoilValue(userDataAtom)
 	const [user, setUser] = useRecoilState(userDataAtom)
 	const [ownTasks, setOwnTasks] = useState([]);
 	const [answers, setAnswers] = useState([]);
@@ -72,7 +71,7 @@ export default function Home() {
 			})
 			setAnswers(docs);
 		});
-	}, [user, setUser, setOwnTasks, setAnswers])
+	}, [user])
 
 	const router = useRouter()
 	function gotoTask(id) {

@@ -11,7 +11,7 @@ export default function TaskPage() {
 
     useEffect(()=>{
         if (router.query.id) taskData.load(router.query.id)
-    }, [router.query.id, taskData])
+    }, [router.query.id])
 
 
     if (!taskData.data) return <div>Loading...</div>
