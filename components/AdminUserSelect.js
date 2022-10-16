@@ -45,7 +45,7 @@ export default function AdminUserSelect() {
             </Fab>
             <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
                 <div style={{ padding: '1em', display: 'flex', flexDirection: 'column' }}>
-                    {userData.origEmail && <Button onClick={() => selectUser(userData.origEmail)}>{userData.displayName.split(' ')[0]}</Button>}
+                    {userData.origEmail && <Button onClick={() => selectUser(userData.origEmail)}>{user.displayName.split(' ')[0]}</Button>}
                     {adminUsers.map((user, i) => {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}
