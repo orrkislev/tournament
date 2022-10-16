@@ -14,7 +14,7 @@ export default function Judge() {
         setPair(null)
         setMessage(null)
         newPair()
-    }, [user, newPair, setMessage, setPair])
+    }, [user])
 
     function newPair() {
         const myJudgedGames = taskData.data.games.filter(g => g.judge == user.email)
