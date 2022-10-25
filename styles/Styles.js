@@ -1,21 +1,5 @@
 import styled from "styled-components";
 
-export const MainContainer = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    `;
-
-export const Main = styled.div`
-    margin-top: 50px;
-    width: 45rem;
-    display: flex;
-    flex-direction: column;
-    `;
-
 export const SimpleTitle = styled.div`
     padding: 10px 20px;
     text-transform: uppercase;
@@ -28,10 +12,12 @@ export const Button = styled.div`
     cursor: pointer;
     padding: 10px 20px;
     text-align: center;
+    border-radius: 4px;
     text-decoration: underline;
+    transition: all 0.1s ease-in-out;
     ${props => !props.disabled && `
         &:hover {
-            background-color: #f5f5f5;
+            background-color: #f5f5f566;
             color: black;
         }
     `}
@@ -41,4 +27,10 @@ export const Button = styled.div`
         }
     `}
     `;
-    
+
+export const TinyTitle = styled.div`
+    font-size: 0.8rem;
+    text-decoration: underline;
+    color: #555;
+    font-size: 0.8rem;
+    `;

@@ -19,7 +19,7 @@ export default function AdminUserSelect() {
 
     useEffect(() => {
         if (!adminEmails.includes(user.email)) return
-        if (!('origEmail' in userData)) setUserData({ ...userData, origEmail: user.email })
+        if (!('origEmail' in userData)) setUserData({ ...userData, origEmail: user.email, email: user.email })
         readDoc('other', 'adminUsers').then(dd => {
             setAdminUsers(dd.users)
         })

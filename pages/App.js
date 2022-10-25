@@ -3,10 +3,20 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilState } from 'recoil';
 import AdminUserSelect from '../components/AdminUserSelect';
 import Header from '../components/Header';
-import { MainContainer, Main } from '../styles/Styles';
 import { userDataAtom } from '../utils/atoms';
 import { auth } from '../utils/firebaseConfig';
 import Login from './Login';
+import styled from "styled-components";
+
+const Main = styled.div`
+    display: flex;
+    flex-direction: column;
+    `;
+const MainContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    `;
 
 export default function App(props) {
 
@@ -22,12 +32,12 @@ export default function App(props) {
     return (
         <>
             <AdminUserSelect />
-            <MainContainer>
-                <Main>
-                    <Header />
+            <Main>
+                <Header />
+                <MainContainer>
                     {props.children}
-                </Main>
-            </MainContainer>
+                </MainContainer>
+            </Main>
         </>
     )
 }

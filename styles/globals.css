@@ -1,5 +1,20 @@
-body{
+body {
     background-color: #333;
-    color: white;
-    font-family: 'Roboto', sans-serif;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: hsla(330, 0%, 64%, 1);
+    background-image:
+        radial-gradient(at 8% 19%, hsla(147, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 4% 55%, hsla(213, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 79% 69%, hsla(41, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 74% 59%, hsla(85, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 13% 38%, hsla(257, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 72% 0%, hsla(224, 42%, 86%, 1) 0px, transparent 50%),
+        radial-gradient(at 82% 75%, hsla(323, 42%, 86%, 1) 0px, transparent 50%);
+
+    margin: 3em;
+    direction: rtl;
 }

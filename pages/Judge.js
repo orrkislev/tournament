@@ -3,25 +3,69 @@ import { useRecoilValue } from "recoil"
 import { userDataAtom } from "../utils/atoms"
 import useTaskData from "../utils/useTaskData"
 import Button from '@mui/material/Button';
+import styled from "styled-components";
+import Section from "../components/Section";
+import { AccountCircle } from "@mui/icons-material";
+
+const PairContainer = styled.div`
+    display: flex;
+    gap: 0.3rem;
+    `;
+const SingleContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    flex:7;
+    ${props => props.tie && `
+        flex:1;
+    `}
+    `;
+const SingleText = styled.div`
+    min-height: 5em;
+    color: white;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #555;
+    padding: 1em 2em;
+    border-radius: 5px;
+    &:hover {
+        background-color: #777;
+    }
+    `;
+
+export const SingleComment = styled.div`
+    display: flex;
+    gap:0.3rem;
+    font-style: italic;
+    font-size: 0.8rem;
+    align-items: center;
+    `;
+
+
+
 
 export default function Judge() {
     const user = useRecoilValue(userDataAtom)
     const taskData = useTaskData()
     const [pair, setPair] = useState(null)
-    const [message, setMessage] = useState(null)
+    const [done, setDone] = useState(false)
+    const [saved, setSaved] = useState(false)
 
     useEffect(() => {
         setPair(null)
-        setMessage(null)
         newPair()
     }, [user])
 
     function newPair() {
+        setSaved(false)
+        setPair(null)
         const myJudgedGames = taskData.data.games.filter(g => g.judge == user.email)
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => g.winner).length >= maxGames * 1.2) {
-            setMessage('you have already judged multiple games')
+            setDone(true)
             return
         }
 
@@ -45,38 +89,74 @@ export default function Judge() {
             const selectedPair = allPairings[Math.floor(Math.random() * allPairings.length)]
             taskData.startJudge(selectedPair)
             setPair(selectedPair)
-        } else {
-            setMessage('no more pairs to judge')
-        }
+        } else setDone(true)
+        setSaved(false)
     }
 
     async function select(id) {
         await taskData.updateJudge(pair, id)
-        setPair(null)
-        setMessage('vote saved')
+        setSaved(true)
+    }
+
+    function saveComment(id, comment) {
+        taskData.saveComment(pair[id], comment)
     }
 
     return (
-        <div>
-            <h1>Judge</h1>
+        <Section action title="שיפוט">
 
-            {message && <div>{message}</div>}
-
-            {!pair && !message && <div>loading...</div>}
+            {done && <div>סיימת לשפט את כל המשחקים</div>}
 
             {pair && (
-                <div>
-                    <div>{taskData.data.title}</div>
-                    <div>{taskData.data.text}</div>
-                    <div>judge: {user.email}</div>
-                    <div>1 : {taskData.data.answers[pair[0]]}</div>
-                    <div>2 : {taskData.data.answers[pair[1]]}</div>
-                    <Button onClick={() => select(1)}>1</Button>
-                    <Button onClick={() => select(2)}>2</Button>
-                </div>
+                <PairContainer>
+                    <JudgeAnswer answer={taskData.data.answers[pair[0]]} onClick={() => select(1)} comment={saved} onComment={txt => saveComment(0, txt)} />
+                    <JudgeAnswer answer={{ text: 'תיקו' }} onClick={() => select(0)} tie />
+                    <JudgeAnswer answer={taskData.data.answers[pair[1]]} onClick={() => select(2)} comment={saved} onComment={txt => saveComment(1, txt)} />
+                </PairContainer>
             )}
 
-            {message == 'vote saved' && <Button onClick={() => newPair()}>next</Button>}
-        </div>
+            {saved && <Button onClick={() => newPair()}>next</Button>}
+
+
+        </Section>
+    )
+}
+
+function JudgeAnswer(props) {
+    const [comment, setComment] = useState('')
+    const [showComment, setShowComment] = useState(false)
+
+    useEffect(() => {
+        setComment('')
+        setShowComment(props.comment)
+    }, [props.comment])
+
+    const click = () => {
+        setShowComment(false)
+        props.onComment(comment)
+    }
+
+    return (
+        <SingleContainer onClick={props.onClick} tie={props.tie}>
+            <SingleText>{props.answer.text}</SingleText>
+            {showComment && (
+                <div>
+                    <input value={comment} onChange={e => setComment(e.target.value)} />
+                    <button onClick={click}>comment</button>
+                </div>
+            )}
+            {!props.tie && props.answer.comments.map(c =>
+                < AnswerComment comment={c} />
+            )}
+        </SingleContainer>
+    )
+}
+
+export function AnswerComment(props) {
+    return (
+        <SingleComment>
+            <AccountCircle size="small" />
+            {props.comment}
+        </SingleComment>
     )
 }

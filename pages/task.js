@@ -4,12 +4,13 @@ import useTaskData from "../utils/useTaskData"
 import Manage from "./Manage"
 import Answer from "./answer"
 import Judge from "./Judge"
+import Task from "../components/Task"
 
 export default function TaskPage() {
     const router = useRouter()
     const taskData = useTaskData()
 
-    useEffect(()=>{
+    useEffect(() => {
         if (router.query.id) taskData.load(router.query.id)
     }, [router.query.id])
 
@@ -18,9 +19,16 @@ export default function TaskPage() {
 
     return (
         <>
-            { taskData.userOwnsTask()     && <Manage /> }
-            { !taskData.userOwnsTask()    && taskData.data.phase == 1 && <Answer /> }
-            { taskData.userAnsweredTask() && taskData.data.phase == 2 && <Judge /> }
+            <Task />
+
+            {taskData.userOwnsTask() ? (
+                <Manage />
+            ) : (
+                <>
+                    {taskData.data.phase == 2 && <Judge />}
+                    <Answer />
+                </>
+            )}
         </>
     )
 }
