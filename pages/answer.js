@@ -22,7 +22,7 @@ export default function Answer() {
             ) : (
                 <>
                     {taskData.data.answers[user.email]?.text}
-                    {taskData.data.answers[user.email]?.comments.map(c => <AnswerComment comment={c}/>)}
+                    {taskData.data.answers[user.email]?.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
                 </>
             )}
 

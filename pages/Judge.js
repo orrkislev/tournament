@@ -56,6 +56,7 @@ export default function Judge() {
     useEffect(() => {
         setPair(null)
         newPair()
+        setDone(false)
     }, [user])
 
     function newPair() {
@@ -145,8 +146,8 @@ function JudgeAnswer(props) {
                     <button onClick={click}>comment</button>
                 </div>
             )}
-            {!props.tie && props.answer.comments.map(c =>
-                < AnswerComment comment={c} />
+            {!props.tie && props.answer.comments.map((c,i) =>
+                < AnswerComment key={i} comment={c} />
             )}
         </SingleContainer>
     )
