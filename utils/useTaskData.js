@@ -1,4 +1,4 @@
-import { onSnapshot, updateDoc } from "firebase/firestore";
+import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { taskDataAtom, userDataAtom } from "./atoms";
 import { getDocRef } from "./firebaseConfig";
@@ -9,8 +9,12 @@ export default function useTaskData() {
 
     function load(id) {
         onSnapshot(getDocRef('tasks', id), (doc) => {
-            const newData = { ...doc.data(), id: doc.id }
-            setData(newData)
+            if (doc.exists()) {
+                const newData = { ...doc.data(), id: doc.id }
+                setData(newData)
+            } else {
+                setData(null)
+            }
         })
     }
     async function update(updateData) {
@@ -43,11 +47,16 @@ export default function useTaskData() {
         await update({ games: newGames })
     }
 
+    async function remove(){
+        const docRef = getDocRef('tasks', data.id)
+        await deleteDoc(docRef)
+    }
+
 
     return {
-        data, load, update,
+        data, load, update, remove,
         userOwnsTask, userAnsweredTask, saveAnswer, saveComment,
-        startJudge, updateJudge
+        startJudge, updateJudge, 
     }
 
 }
