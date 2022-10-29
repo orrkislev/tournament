@@ -10,8 +10,23 @@ export default function Manage() {
     const taskData = useTaskData()
 
 
-    if (taskData.data.phase == 1) return <ManagePhase1 />
-    if (taskData.data.phase == 2) return <ManagePhase2 />
+    let phaseComp
+    if (taskData.data.phase == 1) phaseComp = <ManagePhase1 />
+    if (taskData.data.phase == 2) phaseComp = <ManagePhase2 />
+
+    const removeTask = async ()=>{
+        await taskData.remove()
+        window.location.href = "/"
+    }
+
+    return (
+        <>
+            {phaseComp}
+            <Section info title='סכנה'>
+                <Button onClick={removeTask}>מחק משימה</Button>
+            </Section>
+        </>
+    )
 }
 
 function ManagePhase2() {

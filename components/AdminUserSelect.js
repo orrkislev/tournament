@@ -19,11 +19,17 @@ export default function AdminUserSelect() {
 
     useEffect(() => {
         if (!adminEmails.includes(user.email)) return
-        if (!('origEmail' in userData)) setUserData({ ...userData, origEmail: user.email, email: user.email })
+        const newUserData = { ...userData }
+        newUserData.isAdmin = true
+        if (!('origEmail' in userData)) {
+            newUserData.origEmail = user.email
+            newUserData.email = user.email
+        }
+        setUserData(newUserData)
         readDoc('other', 'adminUsers').then(dd => {
             setAdminUsers(dd.users)
         })
-    }, [user, userData])
+    }, [user])
 
     const addUser = () => {
         const newUsers = [...adminUsers, 'user' + (adminUsers.length + 1)]
@@ -49,6 +55,7 @@ export default function AdminUserSelect() {
                     {adminUsers.map((user, i) => {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}
+                    <Button onClick={() => selectUser('freddy2000@gmail.com')}>Shachar</Button>
                     <Button variant="outlined" onClick={addUser}>Add User</Button>
                 </div>
             </Drawer>

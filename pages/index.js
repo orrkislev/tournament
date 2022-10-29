@@ -23,6 +23,7 @@ const ListItem = styled.div`
   padding: 1rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.8rem;
   &:hover {
 	  border-bottom: 4px solid white;
 	}
@@ -39,9 +40,6 @@ const ListItemRight = styled.div`
   `;
 const ListItemTitle = styled.div`
   font-weight: bold;
-  `;
-const ListItemText = styled.div`
-  font-size: 0.8rem;
   `;
 
 
@@ -74,9 +72,7 @@ export default function Home() {
 	}, [user])
 
 	const router = useRouter()
-	function gotoTask(id) {
-		router.push(`/task?id=${id}`)
-	}
+
 	function gotoAnswer(id) {
 		router.push(`/task?id=${id}`)
 	}
@@ -86,31 +82,53 @@ export default function Home() {
 
 	return (
 		<IndexList>
-			<IndexList>
-				<SimpleTitle>My Tasks</SimpleTitle>
-				<ListItem onClick={newTask}>
-					<ListItemLeft>
-						<ListItemTitle>Create new task</ListItemTitle>
-					</ListItemLeft>
-				</ListItem>
-				{ownTasks.map((doc) => (
-					<ListItem key={doc.id} onClick={() => gotoTask(doc.id)}>
-						<ListItemLeft>
-							<ListItemTitle>{doc.title}</ListItemTitle>
-							<ListItemText>{doc.text}</ListItemText>
-						</ListItemLeft>
+			{user.isAdmin && (
+				<>
+					<ListItem onClick={newTask}>
 						<ListItemRight>
+							<ListItemTitle>Create new task</ListItemTitle>
 						</ListItemRight>
 					</ListItem>
-				))}
-			</IndexList>
+					{ownTasks.map((doc) => (
+						<IndexOwnedTask doc={doc} key={doc.id} />
+					))}
+				</>
+			)}
 
-			<IndexList>
-				<SimpleTitle>My Answers</SimpleTitle>
-				{answers.map((doc, docIndex) => (
-					<div key={docIndex} onClick={() => gotoAnswer(doc.taskID)}>{doc.taskTitle}</div>
-				))}
-			</IndexList>
+			{answers.map((doc, docIndex) => (
+				<ListItem key={docIndex} onClick={() => gotoAnswer(doc.taskID)}>
+					<ListItemRight>
+						<ListItemTitle>{doc.taskTitle}</ListItemTitle>
+					</ListItemRight>
+				</ListItem>
+			))}
 		</IndexList>
+	)
+}
+
+function IndexOwnedTask({ doc }) {
+	const router = useRouter()
+	const numAnswers = Object.keys(doc.answers).length
+	function gotoTask(id) {
+		router.push(`/task?id=${id}`)
+	}
+
+	return (
+		<ListItem onClick={() => gotoTask(doc.id)}>
+			<ListItemRight>
+				<ListItemTitle>{doc.title}</ListItemTitle>
+				<div>{doc.text}</div>
+			</ListItemRight>
+			<ListItemLeft>
+				<div>
+					{numAnswers == 0 ?
+						`אף אחד עדיין לא ענה על השאלון.`
+						: numAnswers == 1 ?
+							`ענה עד כה אחד על השאלה`
+							: `ענו עד כה ${numAnswers} על השאלה`
+					}
+				</div>
+			</ListItemLeft>
+		</ListItem>
 	)
 }

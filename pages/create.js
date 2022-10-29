@@ -38,7 +38,6 @@ export default function Create(props) {
                 author: user.email,
                 title, text, phase: 1, answers: {}
             });
-            setDoc(docRef.id)
             router.push(`/task?id=${docRef.id}`)
         }
     }
