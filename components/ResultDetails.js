@@ -9,7 +9,7 @@ export default function ResultDetails(props) {
     return (
         <div>
             <div>{props.email}</div>
-            <div>{taskData.data.answers[props.email]}</div>
+            <div>{taskData.data.answers[props.email].text}</div>
 
             {taskStats.stats[props.email] && taskStats.stats[props.email].games.map(game => (
                 <GameResult key={game.id} game={game} />
