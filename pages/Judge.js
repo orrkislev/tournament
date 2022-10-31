@@ -67,7 +67,7 @@ export default function Judge() {
     const taskData = useTaskData()
     const [pair, setPair] = useState(null)
     const [done, setDone] = useState(false)
-    const [saved, setSaved] = useState(false)
+    const [saved, setSaved] = useState(null)
 
     useEffect(() => {
         setPair(null)
@@ -76,13 +76,18 @@ export default function Judge() {
     }, [user])
 
     function newPair() {
-        setSaved(false)
+        setSaved(null)
         setPair(null)
+        if (!Object.keys(taskData.data.answers).includes(user.email)) {
+            setDone('אי אפשר לשפוט כי אין לך תשובות')
+            return
+        }
+
         const myJudgedGames = taskData.data.games.filter(g => g.judge == user.email)
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => g.winner).length >= maxGames * 1.2) {
-            setDone(true)
+            setDone('אין עוד משחקים לשפוט')
             return
         }
 
@@ -106,8 +111,8 @@ export default function Judge() {
             const selectedPair = allPairings[Math.floor(Math.random() * allPairings.length)]
             taskData.startJudge(selectedPair)
             setPair(selectedPair)
-        } else setDone(true)
-        setSaved(false)
+        } else setDone('סיימת לשפט את כל המשחקים')
+        setSaved(null)
     }
 
     async function select(id) {
@@ -122,14 +127,14 @@ export default function Judge() {
     return (
         <Section action title="שיפוט">
 
-            {done && <div>סיימת לשפט את כל המשחקים</div>}
+            {done && <div>{done}</div>}
 
             {pair && (
                 <PairContainer>
                     <JudgeAnswer
                         answer={taskData.data.answers[pair[0]]}
                         onClick={() => select(1)}
-                        comment={saved != false}
+                        comment={saved != null}
                         selected={saved == 1}
                         onComment={txt => saveComment(0, txt)} />
 
@@ -137,13 +142,13 @@ export default function Judge() {
                         answer={{ text: 'תיקו' }}
                         onClick={() => select(0)}
                         selected={saved == 0}
-                        comment={saved != false}
+                        comment={saved != null}
                         tie />
 
                     <JudgeAnswer
                         answer={taskData.data.answers[pair[1]]}
                         onClick={() => select(2)}
-                        comment={saved != false}
+                        comment={saved != null}
                         selected={saved == 2}
                         onComment={txt => saveComment(1, txt)} />
                 </PairContainer>
