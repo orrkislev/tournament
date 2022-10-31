@@ -16,9 +16,7 @@ const SingleContainer = styled.div`
     flex-direction: column;
     gap: .5rem;
     flex:7;
-    ${props => props.tie && `
-        flex:1;
-    `}
+    ${props => props.tie && `flex:1; `}
     `;
 const SingleText = styled.div`
     min-height: 5em;
@@ -30,9 +28,27 @@ const SingleText = styled.div`
     background-color: #555;
     padding: 1em 2em;
     border-radius: 5px;
-    &:hover {
-        background-color: #777;
-    }
+    cursor: pointer;
+
+    &:hover { background-color: #777; }
+    ${props => props.state == 'won' && `
+        background-color: #cfc;
+        cursor: default;
+        color: black;
+        &:hover { background-color: #cfc; }
+    `}
+    ${props => props.state == 'lost' && `
+        background-color: #fcc;
+        cursor: default;
+        color: #333;
+        &:hover { background-color: #fcc; }
+    `}
+    ${props => props.state == 'disabled' && `
+        background-color: #ccc;
+        cursor: default;
+        color: #333;
+        &:hover { background-color: #ccc; }
+    `}
     `;
 
 export const SingleComment = styled.div`
@@ -96,7 +112,7 @@ export default function Judge() {
 
     async function select(id) {
         await taskData.updateJudge(pair, id)
-        setSaved(true)
+        setSaved(id)
     }
 
     function saveComment(id, comment) {
@@ -110,13 +126,30 @@ export default function Judge() {
 
             {pair && (
                 <PairContainer>
-                    <JudgeAnswer answer={taskData.data.answers[pair[0]]} onClick={() => select(1)} comment={saved} onComment={txt => saveComment(0, txt)} />
-                    <JudgeAnswer answer={{ text: 'תיקו' }} onClick={() => select(0)} tie />
-                    <JudgeAnswer answer={taskData.data.answers[pair[1]]} onClick={() => select(2)} comment={saved} onComment={txt => saveComment(1, txt)} />
+                    <JudgeAnswer
+                        answer={taskData.data.answers[pair[0]]}
+                        onClick={() => select(1)}
+                        comment={saved != false}
+                        selected={saved == 1}
+                        onComment={txt => saveComment(0, txt)} />
+
+                    <JudgeAnswer
+                        answer={{ text: 'תיקו' }}
+                        onClick={() => select(0)}
+                        selected={saved == 0}
+                        comment={saved != false}
+                        tie />
+
+                    <JudgeAnswer
+                        answer={taskData.data.answers[pair[1]]}
+                        onClick={() => select(2)}
+                        comment={saved != false}
+                        selected={saved == 2}
+                        onComment={txt => saveComment(1, txt)} />
                 </PairContainer>
             )}
 
-            {saved && <Button onClick={() => newPair()}>next</Button>}
+            {saved && <Button onClick={() => newPair()}>שיפוט הבא</Button>}
 
 
         </Section>
@@ -132,21 +165,26 @@ function JudgeAnswer(props) {
         setShowComment(props.comment)
     }, [props.comment])
 
-    const click = () => {
+    const clickComment = () => {
         setShowComment(false)
         props.onComment(comment)
     }
 
+    let state = props.comment ?
+        (props.selected ? 'won' : 'lost')
+        : 'none'
+    if (props.tie && props.comment && !props.selected) state = 'disabled'
+
     return (
         <SingleContainer onClick={props.onClick} tie={props.tie}>
-            <SingleText>{props.answer.text}</SingleText>
-            {showComment && (
+            <SingleText state={state}>{props.answer.text}</SingleText>
+            {showComment && !props.tie && (
                 <div>
                     <input value={comment} onChange={e => setComment(e.target.value)} />
-                    <button onClick={click}>comment</button>
+                    <button onClick={clickComment}>comment</button>
                 </div>
             )}
-            {!props.tie && props.answer.comments.map((c,i) =>
+            {!props.tie && props.answer.comments.map((c, i) =>
                 < AnswerComment key={i} comment={c} />
             )}
         </SingleContainer>
