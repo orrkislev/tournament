@@ -154,7 +154,7 @@ export default function Judge() {
                 </PairContainer>
             )}
 
-            {saved && <Button onClick={() => newPair()}>שיפוט הבא</Button>}
+            {saved != null && <Button onClick={() => newPair()}>שיפוט הבא</Button>}
 
 
         </Section>
@@ -181,7 +181,7 @@ function JudgeAnswer(props) {
     if (props.tie && props.comment && !props.selected) state = 'disabled'
 
     return (
-        <SingleContainer onClick={props.onClick} tie={props.tie}>
+        <SingleContainer onClick={state == 'none' ? props.onClick : () => { }} tie={props.tie}>
             <SingleText state={state}>{props.answer.text}</SingleText>
             {showComment && !props.tie && (
                 <div>

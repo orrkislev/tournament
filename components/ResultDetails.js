@@ -27,12 +27,16 @@ function GameResult(props) {
         setshowanswer(false)
     }, [props])
 
+    const textOptions = {
+        'won': 'ניצחון על',
+        'lost': 'הפסד מול',
+        'draw': 'תיקו עם'
+    }
+
     return (
         <>
             <div style={{ display: 'flex', gap: '2em' }} onMouseEnter={() => sethover(true)} onMouseLeave={() => sethover(false)} onClick={() => setshowanswer(!showanswer)}>
-                <div style={{ width: '1em' }}>{props.game.result.slice(0, 1).toUpperCase()}</div>
-                |
-                <div>{props.game.opponent} <div style={{ fontSize: '0.5rem' }}>{hover ? '(view)' : ''}</div> </div>
+                {textOptions[props.game.result]} {props.game.opponent}
             </div>
             {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent]}.text</div>}
         </>
