@@ -9,8 +9,11 @@ export default function Login() {
     if (user) return <p>Signed In User: {user.email}</p>
 
     return (
-        <div className="App">
-            <button onClick={() => signInWithGoogle()}>Sign In</button>
+        <div style={{display:'grid', placeItems:'center', height:'50vh'}}>
+            <button  
+                style={{padding:'1rem 2rem', borderRadius:'10px', border:'none', cursor:'pointer'}}
+                onClick={signInWithGoogle}>כניסה עם חשבון גוגל
+            </button>
         </div>
     );
 };

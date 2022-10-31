@@ -42,7 +42,7 @@ export default function AdminUserSelect() {
         setUserData(newUserData)
     }
 
-    if (!adminEmails.includes(user.email)) return null
+    if (!userData || !userData.isAdmin) return null
 
     return (
         <>

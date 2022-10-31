@@ -27,8 +27,6 @@ export default function Header() {
     const taskData = useRecoilValue(taskDataAtom)
     const router = useRouter()
 
-    
-
     return (
         <HeaderDiv>
             <HeaderRight>
@@ -37,7 +35,7 @@ export default function Header() {
             </HeaderRight>
 
             <HeaderLeft>
-                <Button onClick={() => router.push('/')}>{user.email}</Button>
+                <Button onClick={signOut}>{user.email}</Button>
             </HeaderLeft>
         </HeaderDiv>
     )

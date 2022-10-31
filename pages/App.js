@@ -25,9 +25,10 @@ export default function App(props) {
 
     useEffect(() => {
         if (user) setUserData({ email: user.email, uid: user.uid, displayName: user.displayName })
+        else setUserData({})
     }, [user, setUserData])
 
-    if (!user && !userData.email) return <Login />
+    if (!user || !userData.email) return <Login />
 
     return (
         <>
