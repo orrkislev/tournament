@@ -34,7 +34,7 @@ function GameResult(props) {
                 |
                 <div>{props.game.opponent} <div style={{ fontSize: '0.5rem' }}>{hover ? '(view)' : ''}</div> </div>
             </div>
-            {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent]}</div>}
+            {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent]}.text</div>}
         </>
     )
 }

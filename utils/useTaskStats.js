@@ -57,6 +57,8 @@ export default function useTaskStats() {
             } else {
                 game1.result = "draw"
                 game2.result = "draw"
+                newStats[player1].points++
+                newStats[player2].points++
             }
             newStats[player1].games.push(game1)
             newStats[player2].games.push(game2)
