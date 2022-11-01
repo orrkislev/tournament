@@ -20,13 +20,19 @@ export default function Answer() {
             {taskData.data.phase == 1 ? (
                 <AnswerFill />
             ) : (
-                <>
-                    {taskData.data.answers[user.email]?.text}
-                    {taskData.data.answers[user.email]?.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
-                </>
+                <AnswerDisplay answer={taskData.data.answers[user.email]} />
             )}
 
         </Section>
+    )
+}
+
+export function AnswerDisplay({ answer }) {
+    return (
+        <>
+            {answer.text}
+            {answer.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
+        </>
     )
 }
 

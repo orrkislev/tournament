@@ -6,19 +6,21 @@ import Button from '@mui/material/Button';
 import styled from "styled-components";
 import Section from "../components/Section";
 import { AccountCircle } from "@mui/icons-material";
+import CheckIcon from '@mui/icons-material/Check';
 
 const PairContainer = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 7fr 1fr 7fr;
     gap: 0.3rem;
     `;
 const SingleContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: .5rem;
-    flex:7;
-    ${props => props.tie && `flex:1; `}
+    height:100%;
     `;
 const SingleText = styled.div`
+    height:100%;
     min-height: 5em;
     color: white;
     font-size: 0.8rem;
@@ -59,6 +61,20 @@ export const SingleComment = styled.div`
     align-items: center;
     `;
 
+const CommentInputContainer = styled.div`
+    display: flex;
+    gap: 0.3rem;
+    `;
+const CommentInput = styled.input`
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    `;
+const CommentSubmit = styled(Button)`
+    margin-top: 0.5rem;
+    `;
+
 
 
 
@@ -71,15 +87,15 @@ export default function Judge() {
 
     useEffect(() => {
         setPair(null)
-        newPair()
         setDone(false)
+        newPair()
     }, [user])
 
     function newPair() {
         setSaved(null)
         setPair(null)
         if (!Object.keys(taskData.data.answers).includes(user.email)) {
-            setDone('אי אפשר לשפוט כי אין לך תשובות')
+            setDone('אתה לא יכול להצביע על תשובות')
             return
         }
 
@@ -87,7 +103,7 @@ export default function Judge() {
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => g.winner).length >= maxGames * 1.2) {
-            setDone('אין עוד משחקים לשפוט')
+            setDone('אין עוד משחקים לדירוג')
             return
         }
 
@@ -111,7 +127,9 @@ export default function Judge() {
             const selectedPair = allPairings[Math.floor(Math.random() * allPairings.length)]
             taskData.startJudge(selectedPair)
             setPair(selectedPair)
-        } else setDone('סיימת לשפט את כל המשחקים')
+        } else {
+            setDone('אין עוד משחקים לדירוג')
+        }
         setSaved(null)
     }
 
@@ -125,33 +143,51 @@ export default function Judge() {
     }
 
     return (
-        <Section action title="שיפוט">
-
+        <Section action={done == false} info={done != false} title="שיפוט">
             {done && <div>{done}</div>}
 
             {pair && (
-                <PairContainer>
-                    <JudgeAnswer
-                        answer={taskData.data.answers[pair[0]]}
-                        onClick={() => select(1)}
-                        comment={saved != null}
-                        selected={saved == 1}
-                        onComment={txt => saveComment(0, txt)} />
+                <>
+                    <PairContainer>
+                        <JudgeAnswer
+                            answer={taskData.data.answers[pair[0]]}
+                            onClick={() => select(1)}
+                            disable={saved != null}
+                            selected={saved == 1}
+                            onComment={txt => saveComment(0, txt)} />
 
-                    <JudgeAnswer
-                        answer={{ text: 'תיקו' }}
-                        onClick={() => select(0)}
-                        selected={saved == 0}
-                        comment={saved != null}
-                        tie />
+                        <JudgeAnswer
+                            answer={{ text: 'תיקו' }}
+                            onClick={() => select(0)}
+                            selected={saved == 0}
+                            disable={saved != null}
+                            tie />
 
-                    <JudgeAnswer
-                        answer={taskData.data.answers[pair[1]]}
-                        onClick={() => select(2)}
-                        comment={saved != null}
-                        selected={saved == 2}
-                        onComment={txt => saveComment(1, txt)} />
-                </PairContainer>
+                        <JudgeAnswer
+                            answer={taskData.data.answers[pair[1]]}
+                            onClick={() => select(2)}
+                            disable={saved != null}
+                            selected={saved == 2}
+                            onComment={txt => saveComment(1, txt)} />
+
+                        <AnswerComments
+                            answer={taskData.data.answers[pair[0]]}
+                            id={pair[0]}
+                            addComment={saved != null}
+                        />
+
+                        <AnswerComments tie />
+
+                        <AnswerComments
+                            answer={taskData.data.answers[pair[1]]}
+                            id={pair[1]}
+                            addComment={saved != null}
+                        />
+
+
+                    </PairContainer>
+                </>
+
             )}
 
             {saved != null && <Button onClick={() => newPair()}>שיפוט הבא</Button>}
@@ -162,34 +198,38 @@ export default function Judge() {
 }
 
 function JudgeAnswer(props) {
-    const [comment, setComment] = useState('')
-    const [showComment, setShowComment] = useState(false)
-
-    useEffect(() => {
-        setComment('')
-        setShowComment(props.comment)
-    }, [props.comment])
-
-    const clickComment = () => {
-        setShowComment(false)
-        props.onComment(comment)
-    }
-
     let state = props.comment ?
         (props.selected ? 'won' : 'lost')
         : 'none'
     if (props.tie && props.comment && !props.selected) state = 'disabled'
 
     return (
-        <SingleContainer onClick={state == 'none' ? props.onClick : () => { }} tie={props.tie}>
+        <SingleContainer onClick={state == 'none' ? props.onClick : () => { }}>
             <SingleText state={state}>{props.answer.text}</SingleText>
-            {showComment && !props.tie && (
-                <div>
-                    <input value={comment} onChange={e => setComment(e.target.value)} />
-                    <button onClick={clickComment}>comment</button>
-                </div>
-            )}
-            {!props.tie && props.answer.comments.map((c, i) =>
+        </SingleContainer>
+    )
+}
+
+function AnswerComments(props) {
+    const [comment, setComment] = useState('')
+    const [savedComment, setSavedComment] = useState(false)
+    const taskData = useTaskData()
+
+    if (props.tie) return <div></div>
+
+    const clickComment = () => {
+        taskData.saveComment(props.id, comment)
+    }
+
+    return (
+        <SingleContainer>
+            {/* {props.addComment && !savedComment && ( */}
+                <CommentInputContainer>
+                    <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
+                    <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>
+                </CommentInputContainer>
+            {/* )} */}
+            {props.answer.comments.map((c, i) =>
                 < AnswerComment key={i} comment={c} />
             )}
         </SingleContainer>

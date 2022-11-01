@@ -7,7 +7,7 @@ import { Button, Fab, Drawer } from "@mui/material"
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useAuthState } from "react-firebase-hooks/auth"
 
-const adminEmails = [
+export const adminEmails = [
     'orrkislev@gmail.com', 'freddy2000@gmail.com'
 ]
 

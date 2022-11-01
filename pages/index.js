@@ -9,6 +9,7 @@ import { auth, firestore, getUser, readDoc } from "../utils/firebaseConfig";
 import { Grid, Card } from "@mui/material";
 import styled from "styled-components";
 import { SimpleLink, SimpleTitle } from "../styles/Styles";
+import { adminEmails } from "../components/AdminUserSelect";
 
 const IndexList = styled.div`
   display: flex;
@@ -24,8 +25,10 @@ const ListItem = styled.div`
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.8rem;
+  transition: all 0.15s ease-in-out;
   &:hover {
-	  border-bottom: 4px solid white;
+	  background-color: #eee;
+	  padding-right: 2rem;
 	}
   `;
 const ListItemLeft = styled.div`
@@ -82,7 +85,7 @@ export default function Home() {
 
 	return (
 		<IndexList>
-			{user.isAdmin && (
+			{adminEmails.includes(user.email) && (
 				<>
 					<ListItem onClick={newTask}>
 						<ListItemRight>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { AnswerDisplay } from "../pages/answer"
 import useTaskData from "../utils/useTaskData"
 import useTaskStats from "../utils/useTaskStats"
 
@@ -9,7 +10,10 @@ export default function ResultDetails(props) {
     return (
         <div>
             <div>{props.email}</div>
-            <div>{taskData.data.answers[props.email].text}</div>
+            <br/>
+
+            <AnswerDisplay answer={taskData.data.answers[props.email]} />
+            <br/>
 
             {taskStats.stats[props.email] && taskStats.stats[props.email].games.map(game => (
                 <GameResult key={game.id} game={game} />
