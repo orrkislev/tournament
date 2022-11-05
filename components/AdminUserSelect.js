@@ -46,7 +46,7 @@ export default function AdminUserSelect() {
 
     return (
         <>
-            <Fab color="primary" aria-label="add" style={{ position: 'absolute', bottom: '3em', right: '3em' }} onClick={() => setDrawerOpen(true)}>
+            <Fab color="primary" aria-label="add" style={{ position: 'fixed', bottom: '3em', left: '3em' }} onClick={() => setDrawerOpen(true)}>
                 <AdminPanelSettingsIcon />
             </Fab>
             <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
