@@ -21,7 +21,12 @@ export default function TaskPage() {
 
     if (!taskData.data) return <div>Loading...</div>
 
-    if (taskData.data.phase == 2 && !Object.keys(taskData.data.answers).includes(user.email)) {
+    let permit = false
+    if (taskData.userOwnsTask()) permit = 'teacher'
+    else if (taskData.userAnsweredTask()) permit = 'student'
+    else if (taskData.data.phase == 1) permit = 'student'
+
+    if (!permit) {
         router.push('/')
         return null
     }
@@ -30,13 +35,13 @@ export default function TaskPage() {
         <>
             <Task />
 
-            {taskData.userOwnsTask() ? (
+            {permit == 'teacher' ? (
                 <Manage />
             ) : (
                 <>
                     {taskData.data.phase == 2 && <Judge />}
                     <Answer />
-                    <ResultTable hideNames markUser asSection disableSelect hideActions/>
+                    {taskData.data.phase != 1 && <ResultTable hideNames markUser asSection disableSelect hideActions />}
                 </>
             )}
         </>

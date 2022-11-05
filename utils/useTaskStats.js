@@ -27,6 +27,9 @@ export default function useTaskStats() {
     }
 
     const calcStats = () => {
+        if (!taskData.data) return
+        if (!taskData.data.games) return
+
         const newStats = {}
         Object.keys(taskData.data.answers).forEach(email => newStats[email] = {
             games: [], points: 0, judged: 0, enabled: true, count: true

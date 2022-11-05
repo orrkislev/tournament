@@ -47,9 +47,12 @@ export function AnswerDisplay({ answer }) {
 const InputText = styled.textarea`
     width: 100%;
     margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: .5em;
     background-color: #00000011;
     border: none;
     border-radius: 5px;
+    min-height: 100px;
     &:focus {
         outline: none;
     }
@@ -79,7 +82,7 @@ function AnswerFill() {
 
     return (
         <div>
-            <InputText type="text" value={text} onChange={e => setText(e.target.value)} rows="1" />
+            <InputText type="text" value={text} onChange={e => setText(e.target.value)} rows="4" />
             <Button disabled={text == saved} onClick={save}>save</Button>
         </div>
     )
