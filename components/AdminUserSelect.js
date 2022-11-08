@@ -7,10 +7,6 @@ import { Button, Fab, Drawer } from "@mui/material"
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useAuthState } from "react-firebase-hooks/auth"
 
-export const adminEmails = [
-    'orrkislev@gmail.com', 'freddy2000@gmail.com'
-]
-
 export default function AdminUserSelect() {
     const [user, loading, error] = useAuthState(auth);
     const [adminUsers, setAdminUsers] = useState([])
@@ -18,18 +14,30 @@ export default function AdminUserSelect() {
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     useEffect(() => {
-        if (!adminEmails.includes(user.email)) return
-        const newUserData = { ...userData }
-        newUserData.isAdmin = true
-        if (!('origEmail' in userData)) {
-            newUserData.origEmail = user.email
-            newUserData.email = user.email
-        }
-        setUserData(newUserData)
         readDoc('other', 'adminUsers').then(dd => {
-            setAdminUsers(dd.users)
+            if (dd.withFake.includes(user.email)) {
+                setAdminUsers(dd.users)
+                setUserData({ ...userData, origEmail: user.email, email: user.email })
+            }
+            if (dd.emails.includes(user.email)) {
+                setUserData({ ...userData, admin: true })
+            }
         })
     }, [user])
+
+    // useEffect(() => {
+    //     if (!adminEmails.includes(user.email)) return
+    //     const newUserData = { ...userData }
+    //     newUserData.isAdmin = true
+    //     if (!('origEmail' in userData)) {
+    //         newUserData.origEmail = user.email
+    //         newUserData.email = user.email
+    //     }
+    //     setUserData(newUserData)
+    //     readDoc('other', 'adminUsers').then(dd => {
+    //         setAdminUsers(dd.users)
+    //     })
+    // }, [user])
 
     const addUser = () => {
         const newUsers = [...adminUsers, 'user' + (adminUsers.length + 1)]
@@ -42,7 +50,7 @@ export default function AdminUserSelect() {
         setUserData(newUserData)
     }
 
-    if (!userData || !userData.isAdmin) return null
+    if (!adminUsers.length) return null
 
     return (
         <>

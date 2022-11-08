@@ -85,7 +85,7 @@ export default function Home() {
 
 	return (
 		<IndexList>
-			{adminEmails.includes(user.email) && (
+			{user.admin && (
 				<>
 					<ListItem onClick={newTask}>
 						<ListItemRight>
