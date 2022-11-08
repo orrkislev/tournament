@@ -31,6 +31,7 @@ const SingleText = styled.div`
     padding: 1em 2em;
     border-radius: 5px;
     cursor: pointer;
+    white-space: pre-line;
 
     &:hover { background-color: #777; }
     ${props => props.state == 'won' && `

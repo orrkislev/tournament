@@ -30,7 +30,7 @@ export default function Answer() {
 export function AnswerDisplay({ answer }) {
     return (
         <>
-            {answer.text}
+            <div style={{whiteSpace: 'pre-line'}}>{answer}</div>
             {answer.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
         </>
     )
@@ -53,6 +53,7 @@ const InputText = styled.textarea`
     border: none;
     border-radius: 5px;
     min-height: 100px;
+    white-space: pre-wrap;
     &:focus {
         outline: none;
     }

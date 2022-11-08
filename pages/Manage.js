@@ -14,7 +14,7 @@ export default function Manage() {
     if (taskData.data.phase == 1) phaseComp = <ManagePhase1 />
     if (taskData.data.phase == 2) phaseComp = <ManagePhase2 />
 
-    const removeTask = async ()=>{
+    const removeTask = async () => {
         await taskData.remove()
         window.location.href = "/"
     }
@@ -65,7 +65,12 @@ function ManagePhase1() {
                 }
 
 
-                {Object.keys(taskData.data.answers).map((email, i) => <div key={i}>{email} - {taskData.data.answers[email].text}</div>)}
+                {Object.keys(taskData.data.answers).map((email, i) => (
+                    <div key={i}>
+                        <div><strong>{email}</strong></div>
+                        <div style={{ whiteSpace: 'pre-line' }}>{taskData.data.answers[email].text}</div>
+                    </div>)
+                )}
             </Section>
 
             {taskData.data.phase == 1 && (

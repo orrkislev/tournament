@@ -64,6 +64,7 @@ export default function AdminUserSelect() {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}
                     <Button onClick={() => selectUser('freddy2000@gmail.com')}>Shachar</Button>
+                    <Button onClick={() => selectUser('yonirp@gmail.com')}>Yoni</Button>
                     <Button variant="outlined" onClick={addUser}>Add User</Button>
                 </div>
             </Drawer>
