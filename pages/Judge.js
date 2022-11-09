@@ -108,7 +108,7 @@ export default function Judge() {
             return
         }
 
-        const myUnjudgedGames = myJudgedGames.filter(g => !g.winner)
+        const myUnjudgedGames = myJudgedGames.filter(g => !('winner' in g))
         if (myUnjudgedGames.length > 0) {
             setPair([myUnjudgedGames[0].participant1, myUnjudgedGames[0].participant2])
             return
