@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import useTaskData from "../utils/useTaskData"
-import styled from 'styled-components'
+import styled, { keyframes, css } from 'styled-components'
 import { useRecoilValue } from "recoil";
 import { userDataAtom } from "../utils/atoms";
 import { Button } from "../styles/Styles"
@@ -30,14 +30,11 @@ export default function Answer() {
 export function AnswerDisplay({ answer }) {
     return (
         <>
-            <div style={{whiteSpace: 'pre-line'}}>{answer.text}</div>
-            {answer.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
+            <div style={{ whiteSpace: 'pre-line' }}>{answer.text}</div>
+            {answer.comments.map((c, i) => <AnswerComment key={i} comment={c} />)}
         </>
     )
 }
-
-
-
 
 
 
@@ -66,25 +63,24 @@ function AnswerFill() {
     const taskData = useTaskData()
 
     useEffect(() => {
-        if (user.email in taskData.data.answers) setText(taskData.data.answers[user.email].text)
+        if (user.uid in taskData.data.answers) setText(taskData.data.answers[user.uid].text)
     }, [taskData.data])
 
     useEffect(() => {
-        setSaved(true)
-        if (taskData.data && user.email in taskData.data.answers)
-            setText(taskData.data.answers[user.email].text)
+        if (taskData.data && user.uid in taskData.data.answers)
+            setText(taskData.data.answers[user.uid].text)
         else setText('')
-    }, [user.email])
+    }, [user.uid])
 
     const save = async () => {
         taskData.saveAnswer(text)
-        setSaved(text)
+        setSaved(true)
     }
 
     return (
         <div>
             <InputText type="text" value={text} onChange={e => setText(e.target.value)} rows="4" />
-            <Button disabled={text == saved} onClick={save}>save</Button>
+            <Button onClick={save}>{saved ? 'התשובה נשמרה' : 'שמירה'}</Button>
         </div>
     )
 }

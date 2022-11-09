@@ -35,7 +35,7 @@ export default function Create(props) {
             props.onFinish()
         } else {
             const docRef = await newDoc('tasks', {
-                author: user.email,
+                author: user.uid,
                 title, text, phase: 1, answers: {}
             });
             router.push(`/task?id=${docRef.id}`)

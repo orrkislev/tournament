@@ -136,6 +136,7 @@ export default function Judge() {
 
     async function select(id) {
         await taskData.updateJudge(pair, id)
+        console.log('set saved',id)
         setSaved(id)
     }
 
@@ -199,10 +200,13 @@ export default function Judge() {
 }
 
 function JudgeAnswer(props) {
-    let state = props.comment ?
-        (props.selected ? 'won' : 'lost')
-        : 'none'
-    if (props.tie && props.comment && !props.selected) state = 'disabled'
+
+    let state = 'none'
+    if (props.disable){
+        state = 'disabled'
+        if (props.selected) state = 'won'
+        else state = 'lost'
+    }
 
     return (
         <SingleContainer onClick={state == 'none' ? props.onClick : () => { }}>
@@ -215,6 +219,11 @@ function AnswerComments(props) {
     const [comment, setComment] = useState('')
     const [savedComment, setSavedComment] = useState(false)
     const taskData = useTaskData()
+
+    useEffect(() => {
+        setComment('')
+        setSavedComment(false)
+    }, [props.answer])
 
     if (props.tie) return <div></div>
 
