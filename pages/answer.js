@@ -20,7 +20,7 @@ export default function Answer() {
             {taskData.data.phase == 1 ? (
                 <AnswerFill />
             ) : (
-                <AnswerDisplay answer={taskData.data.answers[user.email]} />
+                <AnswerDisplay answer={taskData.data.answers[user.uid]} />
             )}
 
         </Section>
@@ -30,7 +30,7 @@ export default function Answer() {
 export function AnswerDisplay({ answer }) {
     return (
         <>
-            <div style={{whiteSpace: 'pre-line'}}>{answer}</div>
+            <div style={{whiteSpace: 'pre-line'}}>{answer.text}</div>
             {answer.comments.map((c,i) => <AnswerComment key={i} comment={c}/>)}
         </>
     )

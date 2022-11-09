@@ -65,10 +65,10 @@ function ManagePhase1() {
                 }
 
 
-                {Object.keys(taskData.data.answers).map((email, i) => (
+                {Object.values(taskData.data.answers).map((val, i) => (
                     <div key={i}>
-                        <div><strong>{email}</strong></div>
-                        <div style={{ whiteSpace: 'pre-line' }}>{taskData.data.answers[email].text}</div>
+                        <div><strong>{val.email}</strong></div>
+                        <div style={{ whiteSpace: 'pre-line' }}>{val.text}</div>
                     </div>)
                 )}
             </Section>

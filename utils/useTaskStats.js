@@ -31,8 +31,8 @@ export default function useTaskStats() {
         if (!taskData.data.games) return
 
         const newStats = {}
-        Object.keys(taskData.data.answers).forEach(email => newStats[email] = {
-            games: [], points: 0, judged: 0, enabled: true, count: true
+        Object.keys(taskData.data.answers).forEach(uid => newStats[uid] = {
+            games: [], points: 0, judged: 0, enabled: true, count: true, uid, email: taskData.data.answers[uid].email
         })
         Object.keys(filterData).forEach(email => {
             newStats[email].enabled = !filterData[email].disable

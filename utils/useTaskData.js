@@ -22,28 +22,28 @@ export default function useTaskData() {
         await updateDoc(docRef, updateData)
     }
 
-    const userOwnsTask = () => data.author === user.email
-    const userAnsweredTask = () => Object.keys(data.answers).includes(user.email)
+    const userOwnsTask = () => data.author === user.uid
+    const userAnsweredTask = () => Object.keys(data.answers).includes(user.uid)
 
     function saveAnswer(text) {
-        const newAnswer = { text, comments: [] }
-        const newAnswers = { ...data.answers, [user.email]: newAnswer }
+        const newAnswer = { text, comments: [], email: user.email }
+        const newAnswers = { ...data.answers, [user.uid]: newAnswer }
         update({ answers: newAnswers })
     }
-    function saveComment(email, txt) {
-        const newComments = [...data.answers[email].comments, txt]
-        const newAnswer = { ...data.answers[email], comments: newComments }
-        const newAnswers = { ...data.answers, [email]: newAnswer }
+    function saveComment(uid, txt) {
+        const newComments = [...data.answers[uid].comments, txt]
+        const newAnswer = { ...data.answers[uid], comments: newComments }
+        const newAnswers = { ...data.answers, [uid]: newAnswer }
         update({ answers: newAnswers })
     }
 
     function startJudge(pair) {
-        const newGames = [...data.games, { participant1: pair[0], participant2: pair[1], judge: user.email }]
+        const newGames = [...data.games, { participant1: pair[0], participant2: pair[1], judge: user.uid }]
         update({ games: newGames })
     }
     async function updateJudge(pair, id) {
         const newGames = data.games.filter(g => g.participant1 !== pair[0] || g.participant2 !== pair[1])
-        newGames.push({ participant1: pair[0], participant2: pair[1], judge: user.email, winner: id })
+        newGames.push({ participant1: pair[0], participant2: pair[1], judge: user.uid, winner: id })
         await update({ games: newGames })
     }
 

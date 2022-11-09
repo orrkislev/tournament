@@ -41,7 +41,7 @@ export default function TaskPage() {
                 <>
                     {taskData.data.phase == 2 && <Judge />}
                     <Answer />
-                    {taskData.data.phase != 1 && <ResultTable hideNames markUser asSection disableSelect hideActions />}
+                    {taskData.data.phase != 1 && <ResultTable hideNames markUser asSection disableSelect hideActions onlyTop={5}/>}
                 </>
             )}
         </>

@@ -46,7 +46,7 @@ export default function AdminUserSelect() {
     }
 
     const selectUser = (user) => {
-        const newUserData = { ...userData, email: user }
+        const newUserData = { ...userData, uid: user }
         setUserData(newUserData)
     }
 
@@ -63,8 +63,8 @@ export default function AdminUserSelect() {
                     {adminUsers.map((user, i) => {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}
-                    <Button onClick={() => selectUser('freddy2000@gmail.com')}>Shachar</Button>
-                    <Button onClick={() => selectUser('yonirp@gmail.com')}>Yoni</Button>
+                    <Button onClick={() => selectUser('Y0OLAeqDEyRb8M57GR9uLQglLr42')}>Shachar</Button>
+                    <Button onClick={() => selectUser('aZfqXCEO3fZO90k8Qk6orvR62eT2')}>Yoni</Button>
                     <Button variant="outlined" onClick={addUser}>Add User</Button>
                 </div>
             </Drawer>

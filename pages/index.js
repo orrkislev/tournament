@@ -56,7 +56,7 @@ export default function Home() {
 			setUser(getUser())
 			return
 		}
-		const q = query(collection(firestore, "tasks"), where("author", "==", user.email));
+		const q = query(collection(firestore, "tasks"), where("author", "==", user.uid));
 		getDocs(q).then((querySnapshot) => {
 			const docs = [];
 			querySnapshot.forEach((doc) => {
@@ -64,10 +64,11 @@ export default function Home() {
 			})
 			setOwnTasks(docs);
 		});
-		const q2 = query(collection(firestore, "tasks"), where("answers." + user.email, "!=", ""));
+		const q2 = query(collection(firestore, "tasks"), where("answers." + user.uid, "!=", ""));
 		getDocs(q2).then((querySnapshot) => {
 			const docs = [];
 			querySnapshot.forEach((doc) => {
+				console.log(doc.data().title)
 				docs.push({ taskID: doc.id, taskTitle: doc.data().title });
 			})
 			setAnswers(docs);

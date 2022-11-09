@@ -95,12 +95,12 @@ export default function Judge() {
     function newPair() {
         setSaved(null)
         setPair(null)
-        if (!Object.keys(taskData.data.answers).includes(user.email)) {
+        if (!Object.keys(taskData.data.answers).includes(user.uid)) {
             setDone('אתה לא יכול להצביע על תשובות')
             return
         }
 
-        const myJudgedGames = taskData.data.games.filter(g => g.judge == user.email)
+        const myJudgedGames = taskData.data.games.filter(g => g.judge == user.uid)
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => g.winner).length >= maxGames * 1.2) {
@@ -116,7 +116,7 @@ export default function Judge() {
 
 
         const allPairings = []
-        const students = Object.keys(taskData.data.answers).filter(email => email !== user.email)
+        const students = Object.keys(taskData.data.answers).filter(uid => uid !== user.uid)
         for (let i = 0; i < students.length; i++) {
             for (let j = i + 1; j < students.length; j++) {
                 if (taskData.data.games.find(game => game.participant1 == students[i] && game.participant2 == students[j])) continue

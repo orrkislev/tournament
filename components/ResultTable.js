@@ -15,7 +15,7 @@ export default function ResultTable(props) {
     const [selected, setSelected] = useState(null)
 
     useEffect(() => {
-        if (props.markUser) setSelected(user.email)
+        if (props.markUser) setSelected(user.uid)
     }, [props])
 
     const select = (email) => {
@@ -29,10 +29,10 @@ export default function ResultTable(props) {
         return <div>Loading...</div>
     }
 
-    const table = Object.keys(taskStats.stats).map(email => {
-        return { ...taskStats.stats[email], name: email }
-    })
+    const table = Object.values(taskStats.stats)
     table.sort((a, b) => b.points - a.points)
+
+    if (props.onlyTop) table.splice(props.onlyTop)
 
     const tableElement = (
         <TableContainer component={Paper}>
@@ -40,7 +40,7 @@ export default function ResultTable(props) {
                 <TableHead>
                     <TableRow>
                         <TableCell>place</TableCell>
-                        <TableCell>Name</TableCell>
+                        <TableCell>Email</TableCell>
                         <TableCell align="right">judged</TableCell>
                         <TableCell align="right">games</TableCell>
                         <TableCell align="right">won</TableCell>
@@ -53,11 +53,11 @@ export default function ResultTable(props) {
                 </TableHead>
                 <TableBody>
                     {table.map((row, i) => (
-                        <TableRow key={row.name}
-                            style={{ backgroundColor: selected == row.name ? "#b0b0b0" : (i % 2 == 0 ? "#f0f0f0" : "#ffffff") }}
-                            onClick={() => select(row.name)}>
+                        <TableRow key={row.uid}
+                            style={{ backgroundColor: selected == row.uid ? "#b0b0b0" : (i % 2 == 0 ? "#f0f0f0" : "#ffffff") }}
+                            onClick={() => select(row.uid)}>
                             <TableCell component="th" scope="row"> {i + 1} </TableCell>
-                            <TableCell> {props.hideNames ? (selected == row.name ? row.name : '****') : row.name} </TableCell>
+                            <TableCell> {props.hideNames ? (selected == row.uid ? row.email : '****') : row.email} </TableCell>
                             <TableCell align="center">{row.judged}</TableCell>
                             <TableCell align="center">{row.games.length}</TableCell>
                             <TableCell align="center">{row.games.filter(game => game.result == 'won').length}</TableCell>
