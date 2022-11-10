@@ -7,15 +7,19 @@ export default function ResultDetails(props) {
     const taskData = useTaskData()
     const taskStats = useTaskStats()
 
+    if (!taskData) return null
+
+    const email = taskData.data.answers[props.uid].email
+
     return (
         <div>
-            <div>{props.email}</div>
+            <div>{email}</div>
             <br/>
 
-            <AnswerDisplay answer={taskData.data.answers[props.email]} />
+            <AnswerDisplay answer={taskData.data.answers[props.uid]} />
             <br/>
 
-            {taskStats.stats[props.email] && taskStats.stats[props.email].games.map(game => (
+            {taskStats.stats[props.uid] && taskStats.stats[props.uid].games.map(game => (
                 <GameResult key={game.id} game={game} />
             ))}
         </div>
@@ -40,9 +44,9 @@ function GameResult(props) {
     return (
         <>
             <div style={{ display: 'flex', gap: '2em' }} onMouseEnter={() => sethover(true)} onMouseLeave={() => sethover(false)} onClick={() => setshowanswer(!showanswer)}>
-                {textOptions[props.game.result]} {props.game.opponent}
+                {textOptions[props.game.result]} {taskData.data.answers[props.game.opponent].email}
             </div>
-            {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent]}.text</div>}
+            {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent].text}</div>}
         </>
     )
 }

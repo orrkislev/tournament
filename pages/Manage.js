@@ -34,8 +34,8 @@ function ManagePhase2() {
 
     return (
         <Section info>
-            <ResultTable onSelect={(email) => setSelected(email)} />
-            {selected && <ResultDetails email={selected} />}
+            <ResultTable onSelect={(uid) => setSelected(uid)} />
+            {selected && <ResultDetails uid={selected} />}
         </Section>
     )
 }

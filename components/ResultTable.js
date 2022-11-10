@@ -18,10 +18,10 @@ export default function ResultTable(props) {
         if (props.markUser) setSelected(user.uid)
     }, [props])
 
-    const select = (email) => {
+    const select = (uid) => {
         if (props.disableSelect) return
-        setSelected(email)
-        props.onSelect(email)
+        setSelected(uid)
+        props.onSelect(uid)
     }
 
     if (!taskStats.stats) {
