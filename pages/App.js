@@ -24,7 +24,7 @@ export default function App(props) {
     const [userData, setUserData] = useRecoilState(userDataAtom);
 
     useEffect(() => {
-        if (user) setUserData({ email: user.email, uid: user.uid, displayName: user.displayName })
+        if (user) setUserData({ email: user.email, uid: user.uid, name: user.displayName })
         else setUserData({})
     }, [user, setUserData])
 

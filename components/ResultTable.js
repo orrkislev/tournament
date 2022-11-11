@@ -32,6 +32,9 @@ export default function ResultTable(props) {
     const table = Object.values(taskStats.stats)
     table.sort((a, b) => b.points - a.points)
 
+    if (props.markUser)
+        if (table.findIndex(e => e.uid === selected) > 5) setSelected(null)
+
     const tableElement = (
         <TableContainer component={Paper}>
             <Table size="small">
@@ -40,6 +43,7 @@ export default function ResultTable(props) {
                         <TableCell>place</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell align="right">judged</TableCell>
+                        <TableCell align="right">commented</TableCell>
                         <TableCell align="right">games</TableCell>
                         <TableCell align="right">won</TableCell>
                         <TableCell align="right">lost</TableCell>
@@ -52,11 +56,12 @@ export default function ResultTable(props) {
                 <TableBody>
                     {table.map((row, i) => (
                         <TableRow key={row.uid}
-                            style={{ backgroundColor: (i < 5 && selected == row.uid) ? "#b0b0b0" : (i % 2 == 0 ? "#f0f0f0" : "#ffffff") }}
+                            style={{ backgroundColor: selected == row.uid ? "#b0b0b0" : (i % 2 == 0 ? "#f0f0f0" : "#ffffff") }}
                             onClick={() => select(row.uid)}>
                             <TableCell component="th" scope="row"> {i + 1} </TableCell>
-                            <TableCell> {props.hideNames ? ((i < 5 && selected == row.uid) ? row.email : '****') : row.email} </TableCell>
+                            <TableCell> {props.hideNames ? (selected == row.uid ? row.email : '****') : row.email} </TableCell>
                             <TableCell align="center">{row.judged}</TableCell>
+                            <TableCell align="center">{row.commented}</TableCell>
                             <TableCell align="center">{row.games.length}</TableCell>
                             <TableCell align="center">{row.games.filter(game => game.result == 'won').length}</TableCell>
                             <TableCell align="center">{row.games.filter(game => game.result == 'lost').length}</TableCell>

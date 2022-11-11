@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { signOut } from "../utils/firebaseConfig";
 import { useRouter } from "next/router";
 import { Button } from "../styles/Styles";
+import useTaskData from "../utils/useTaskData";
 
 const HeaderDiv = styled.div`
     display: flex;
@@ -24,14 +25,20 @@ const HeaderLeft = styled.div`
 
 export default function Header() {
     const user = useRecoilValue(userDataAtom)
-    const taskData = useRecoilValue(taskDataAtom)
+    const taskData = useTaskData()
     const router = useRouter()
+
+    const home = () => {
+        taskData.reset()
+        router.push("/")
+    }
+
 
     return (
         <HeaderDiv>
             <HeaderRight>
-                <Button onClick={() => router.push('/')}>הליגה</Button>
-                {taskData && <div>{taskData.title}</div>}
+                <Button onClick={home}>הליגה</Button>
+                {taskData.data && <div>{taskData.data.title}</div>}
             </HeaderRight>
 
             <HeaderLeft>

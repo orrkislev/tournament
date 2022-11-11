@@ -44,7 +44,7 @@ function GameResult(props) {
     return (
         <>
             <div style={{ display: 'flex', gap: '2em' }} onMouseEnter={() => sethover(true)} onMouseLeave={() => sethover(false)} onClick={() => setshowanswer(!showanswer)}>
-                {textOptions[props.game.result]} {taskData.data.answers[props.game.opponent].email}
+                {textOptions[props.game.result]} {taskData.data.answers[props.game.opponent].email} (שיפוט של {taskData.data.answers[props.game.judge].email})
             </div>
             {showanswer && <div style={{ marginLeft: '2em' }}>{taskData.data.answers[props.game.opponent].text}</div>}
         </>

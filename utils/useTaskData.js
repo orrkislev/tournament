@@ -7,6 +7,10 @@ export default function useTaskData() {
     const [data, setData] = useRecoilState(taskDataAtom);
     const user = useRecoilValue(userDataAtom)
 
+    function reset(){
+        setData(null)
+    }
+
     function load(id) {
         onSnapshot(getDocRef('tasks', id), (doc) => {
             if (doc.exists()) {
@@ -26,7 +30,7 @@ export default function useTaskData() {
     const userAnsweredTask = () => Object.keys(data.answers).includes(user.uid)
 
     function saveAnswer(text) {
-        const newAnswer = { text, comments: [], email: user.email }
+        const newAnswer = { text, comments: [], email: user.name, }
         const newAnswers = { ...data.answers, [user.uid]: newAnswer }
         update({ answers: newAnswers })
     }
@@ -34,6 +38,8 @@ export default function useTaskData() {
         const newComments = [...data.answers[uid].comments, txt]
         const newAnswer = { ...data.answers[uid], comments: newComments }
         const newAnswers = { ...data.answers, [uid]: newAnswer }
+        if (!(leftComments in newAnswers[user.uid])) newAnswers[user.uid].leftComments = 1
+        newAnswers[user.uid].leftComments++
         update({ answers: newAnswers })
     }
 
@@ -54,7 +60,7 @@ export default function useTaskData() {
 
 
     return {
-        data, load, update, remove,
+        data, reset, load, update, remove,
         userOwnsTask, userAnsweredTask, saveAnswer, saveComment,
         startJudge, updateJudge, 
     }

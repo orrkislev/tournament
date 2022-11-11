@@ -8,6 +8,7 @@ import Task from "../components/Task"
 import { useRecoilValue } from "recoil"
 import { userDataAtom } from "../utils/atoms"
 import ResultTable from "../components/ResultTable"
+import TaskProgress from "../components/TaskProgress"
 
 export default function TaskPage() {
     const router = useRouter()
@@ -34,6 +35,8 @@ export default function TaskPage() {
     return (
         <>
             <Task />
+
+            <TaskProgress />
 
             {permit == 'teacher' ? (
                 <Manage />

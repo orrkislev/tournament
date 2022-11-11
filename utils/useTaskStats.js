@@ -32,7 +32,8 @@ export default function useTaskStats() {
 
         const newStats = {}
         Object.keys(taskData.data.answers).forEach(uid => newStats[uid] = {
-            games: [], points: 0, judged: 0, enabled: true, count: true, uid, email: taskData.data.answers[uid].email
+            games: [], points: 0, judged: 0, enabled: true, count: true, uid, email: taskData.data.answers[uid].email,
+            commented: taskData.data.answers[uid].leftComments ?? 0
         })
         Object.keys(filterData).forEach(email => {
             newStats[email].enabled = !filterData[email].disable
@@ -47,8 +48,8 @@ export default function useTaskStats() {
             if (!newStats[game.participant1].enabled || !newStats[player2].enabled) continue
             if (!newStats[game.judge].count) continue
 
-            const game1 = { opponent: player2 }
-            const game2 = { opponent: player1 }
+            const game1 = { opponent: player2, judge: game.judge }
+            const game2 = { opponent: player1, judge: game.judge }
             if (game.winner == 1) {
                 game1.result = "won"
                 game2.result = "lost"
