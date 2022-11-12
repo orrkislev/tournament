@@ -19,9 +19,9 @@ export default function ResultDetails(props) {
             <AnswerDisplay answer={taskData.data.answers[props.uid]} />
             <br/>
 
-            {taskStats.stats[props.uid] && taskStats.stats[props.uid].games.map(game => (
+            {/* {taskStats.stats[props.uid] && taskStats.stats[props.uid].games.map(game => (
                 <GameResult key={game.id} game={game} />
-            ))}
+            ))} */}
         </div>
     )
 }

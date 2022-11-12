@@ -13,16 +13,16 @@ export default function useTaskStats() {
         calcStats()
     }, [taskData.data, filterData])
 
-    const filterEnable = (email) => {
+    const filterEnable = (uid) => {
         const newFilterData = { ...filterData }
-        if (!newFilterData[email]) newFilterData[email] = { disable: false, uncount: false }
-        newFilterData[email].disable = !newFilterData[email].disable
+        if (!newFilterData[uid]) newFilterData[uid] = { disable: false, uncount: false }
+        newFilterData[uid].disable = !newFilterData[uid].disable
         setFilterData(newFilterData)
     }
-    const filterCount = (email) => {
+    const filterCount = (uid) => {
         const newFilterData = { ...filterData }
-        if (!newFilterData[email]) newFilterData[email] = { disable: false, uncount: false }
-        newFilterData[email].uncount = !newFilterData[email].uncount
+        if (!newFilterData[uid]) newFilterData[uid] = { disable: false, uncount: false }
+        newFilterData[uid].uncount = !newFilterData[uid].uncount
         setFilterData(newFilterData)
     }
 
@@ -35,9 +35,9 @@ export default function useTaskStats() {
             games: [], points: 0, judged: 0, enabled: true, count: true, uid, email: taskData.data.answers[uid].email,
             commented: taskData.data.answers[uid].leftComments ?? 0
         })
-        Object.keys(filterData).forEach(email => {
-            newStats[email].enabled = !filterData[email].disable
-            newStats[email].count = !filterData[email].uncount
+        Object.keys(filterData).forEach(uid => {
+            newStats[uid].enabled = !filterData[uid].disable
+            newStats[uid].count = !filterData[uid].uncount
         })
 
         for (let i = 0; i < taskData.data.games.length; i++) {
