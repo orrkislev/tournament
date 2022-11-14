@@ -95,16 +95,13 @@ export default function Judge() {
     function newPair() {
         setSaved(null)
         setPair(null)
-        if (!Object.keys(taskData.data.answers).includes(user.uid)) {
-            setDone('אתה לא יכול להצביע על תשובות')
-            return
-        }
 
         const myJudgedGames = taskData.data.games.filter(g => g.judge == user.uid)
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => g.winner).length >= maxGames * 1.2) {
             setDone('אין עוד משחקים לדירוג')
+            taskData.setData({ ...taskData.data, finishedJudging: true })
             return
         }
 
@@ -130,6 +127,7 @@ export default function Judge() {
             setPair(selectedPair)
         } else {
             setDone('אין עוד משחקים לדירוג')
+            taskData.setData({ ...taskData.data, finishedJudging: true })
         }
         setSaved(null)
     }
