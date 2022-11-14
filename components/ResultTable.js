@@ -56,6 +56,13 @@ export default function ResultTable(props) {
     table.forEach((row, i) => {
         const clr = (i % 2 == 0 ? "#d0d0d0" : "#ffffff")
         row.color = `linear-gradient(30deg, ${clr}66 30%, ${clr}aa 90%)`
+        if (props.withHover && hover && row.uid == hover[1]) row.color += 'black'
+        row.showName = true
+        if (props.hideNames){
+            if (props.hideNames instanceof Number && i >= props.hideNames) row.showName = false
+            if (props.hideNames === true) row.showName = false
+        }
+        if (selected && row.uid === selected) row.showName = true
     })
 
     if (selected) {
@@ -85,7 +92,7 @@ export default function ResultTable(props) {
                     </div>
                 )}
 
-                <Table size="small">
+                <Table size="small" style={{cursor:'pointer'}}>
                     <TableHead>
                         <TableRow>
                             <TableCell>place</TableCell>

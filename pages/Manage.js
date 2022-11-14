@@ -34,7 +34,7 @@ function ManagePhase2() {
 
     return (
         <Section info>
-            <ResultTable onSelect={(uid) => setSelected(uid)} withHover/>
+            <ResultTable onSelect={(uid) => setSelected(uid)} withHover hideNames={5}/>
             {selected && <ResultDetails uid={selected} />}
         </Section>
     )

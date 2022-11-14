@@ -31,8 +31,6 @@ export default function TaskPage() {
         return null
     }
 
-    console.log('taskData.data.finishedJudging', taskData.data.finishedJudging)
-
     return (
         <>
             <Task />
