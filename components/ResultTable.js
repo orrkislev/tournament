@@ -59,7 +59,9 @@ export default function ResultTable(props) {
         if (props.withHover && hover && row.uid == hover[1]) row.color += 'black'
         row.showName = true
         if (props.hideNames){
-            if (props.hideNames instanceof Number && i >= props.hideNames) row.showName = false
+            if (typeof(props.hideNames) == 'number' && i >= props.hideNames) {
+                row.showName = false
+            }
             if (props.hideNames === true) row.showName = false
         }
         if (selected && row.uid === selected) row.showName = true
@@ -112,7 +114,7 @@ export default function ResultTable(props) {
                         {table.map((row, i) => (
                             <TableRow key={row.uid} style={{ background: row.color }} onClick={() => select(row.uid)} >
                                 <TableCell component="th" scope="row"> {i + 1} </TableCell>
-                                <TableCell onMouseEnter={(e) => setHover([e.pageY, row.uid])} onMouseLeave={() => setHover(null)}> {props.hideNames ? (selected == row.uid ? row.email : '****') : row.email} </TableCell>
+                                <TableCell onMouseEnter={(e) => setHover([e.pageY, row.uid])} onMouseLeave={() => setHover(null)}> {row.showName ? row.email : '****'} </TableCell>
                                 <TableCell align="center">{row.judged}</TableCell>
                                 <TableCell align="center">{row.commented}</TableCell>
                                 <TableCell align="center">{row.games.filter(game => game.result == 'won').length}</TableCell>
