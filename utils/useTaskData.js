@@ -39,7 +39,7 @@ export default function useTaskData() {
         const newAnswer = { ...data.answers[uid], comments: newComments }
         const newAnswers = { ...data.answers, [uid]: newAnswer }
         if (!('leftComments' in newAnswers[user.uid])) newAnswers[user.uid] = { ...newAnswers[user.uid], leftComments: 0 }
-        newAnswers[user.uid].leftComments++
+        newAnswers[user.uid] = { ...newAnswers[user.uid], leftComments: newAnswers[user.uid].leftComments + 1 }
         update({ answers: newAnswers })
     }
 
