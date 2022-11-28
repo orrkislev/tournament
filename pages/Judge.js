@@ -122,7 +122,18 @@ export default function Judge() {
             }
         }
         if (allPairings.length > 0) {
-            const selectedPair = allPairings[Math.floor(Math.random() * allPairings.length)]
+            const seenPlayers = new Set()
+            myJudgedGames.forEach(g => {
+                seenPlayers.add(g.participant1)
+                seenPlayers.add(g.participant2)
+            })
+            allPairings.sort((a, b) => {
+                const aSeen = seenPlayers.has(a[0]) + seenPlayers.has(a[1])
+                const bSeen = seenPlayers.has(b[0]) + seenPlayers.has(b[1])
+                if (aSeen == bSeen) return Math.random() - 0.5
+                return aSeen - bSeen
+            })
+            const selectedPair = allPairings[0]
             taskData.startJudge(selectedPair)
             setPair(selectedPair)
         } else {

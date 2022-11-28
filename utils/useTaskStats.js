@@ -32,7 +32,9 @@ export default function useTaskStats() {
 
         const newStats = {}
         Object.keys(taskData.data.answers).forEach(uid => newStats[uid] = {
-            games: [], points: 0, judged: 0, enabled: true, count: true, uid, email: taskData.data.answers[uid].email,
+            opponents: {},
+            judged: 0, won: 0, lost: 0, tie: 0, total: 0, score: 0,
+            enabled: true, count: true, uid, email: taskData.data.answers[uid].email,
             commented: taskData.data.answers[uid].leftComments ?? 0
         })
         Object.keys(filterData).forEach(uid => {
@@ -48,25 +50,20 @@ export default function useTaskStats() {
             if (!newStats[game.participant1].enabled || !newStats[player2].enabled) continue
             if (!newStats[game.judge].count) continue
 
-            const game1 = { opponent: player2, judge: game.judge }
-            const game2 = { opponent: player1, judge: game.judge }
-            if (game.winner == 1) {
-                game1.result = "won"
-                game2.result = "lost"
-                newStats[player1].points+=3
-            } else if (game.winner == 2) {
-                game1.result = "lost"
-                game2.result = "won"
-                newStats[player2].points+=3
-            } else {
-                game1.result = "draw"
-                game2.result = "draw"
-                newStats[player1].points++
-                newStats[player2].points++
-            }
-            newStats[player1].games.push(game1)
-            newStats[player2].games.push(game2)
+            newStats[player1].opponents[player2] = { result: game.winner == 1 ? 'won' : game.winner == 2 ? 'lost' : 'tie', judge: game.judge }
+            newStats[player2].opponents[player1] = { result: game.winner == 1 ? 'lost' : game.winner == 2 ? 'won' : 'tie', judge: game.judge }
         }
+
+        Object.keys(newStats).forEach(uid => {
+            const player = newStats[uid]
+            Object.keys(player.opponents).forEach(opponent => {
+                const result = player.opponents[opponent].result
+                player[result]++
+                player.total++
+                if (result == 'won') player.score += 3
+                if (result == 'tie') player.score += 1
+            })
+        })
         setStats(newStats)
     }
 

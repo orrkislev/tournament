@@ -71,12 +71,12 @@ export default function ResultTable(props) {
         const selectedData = table.find(e => e.uid === selected)
         selectedData.color = '#888'
         if (!props.markUser) {
-            selectedData.games.forEach(game => {
+            Object.keys(selectedData.opponents).forEach((opponentId,i) => {
                 table.forEach(row => {
-                    if (game.opponent === row.uid) {
+                    if (opponentId === row.uid) {
                         if (game.result === 'won') row.color += ', linear-gradient(90deg, transparent 70%, #55ff55 100%)'
                         if (game.result === 'lost') row.color += ', linear-gradient(90deg, transparent 70%, #ff5555 100%)'
-                        if (game.result === 'draw') row.color += ', linear-gradient(90deg, transparent 70%, #5555ff 100%)'
+                        if (game.result === 'tie') row.color += ', linear-gradient(90deg, transparent 70%, #5555ff 100%)'
                     }
                 })
             })
@@ -117,11 +117,11 @@ export default function ResultTable(props) {
                                 <TableCell onMouseEnter={(e) => setHover([e.pageY, row.uid])} onMouseLeave={() => setHover(null)}> {row.showName ? row.email : '****'} </TableCell>
                                 <TableCell align="center">{row.judged}</TableCell>
                                 <TableCell align="center">{row.commented}</TableCell>
-                                <TableCell align="center">{row.games.filter(game => game.result == 'won').length}</TableCell>
-                                <TableCell align="center">{row.games.filter(game => game.result == 'lost').length}</TableCell>
-                                <TableCell align="center">{row.games.filter(game => game.result == 'draw').length}</TableCell>
-                                <TableCell align="center">{row.games.length}</TableCell>
-                                <TableCell align="center">{row.points}</TableCell>
+                                <TableCell align="center">{row.won}</TableCell>
+                                <TableCell align="center">{row.lost}</TableCell>
+                                <TableCell align="center">{row.tie}</TableCell>
+                                <TableCell align="center">{row.total}</TableCell>
+                                <TableCell align="center">{row.score}</TableCell>
                                 {showActions && <TableCell align="center"><GiteIcon color={row.enabled ? 'nonw' : 'warning'} onClick={() => taskStats.filterEnable(row.uid)} /></TableCell>}
                                 {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
                             </TableRow>

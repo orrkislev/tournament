@@ -37,6 +37,8 @@ export default function TaskPage() {
 
             <TaskProgress />
 
+            <Judge />
+
             {permit == 'teacher' ? (
                 <Manage />
             ) : (

@@ -48,7 +48,9 @@ export default function useTaskData() {
         update({ games: newGames })
     }
     async function updateJudge(pair, id) {
-        const newGames = data.games.filter(g => g.participant1 !== pair[0] || g.participant2 !== pair[1])
+        const newGames = data.games.filter(g => (
+            !(g.participant1 == pair[0] && g.participant2 == pair[1]) &&
+            !(g.participant1 == pair[1] && g.participant2 == pair[0])))
         newGames.push({ participant1: pair[0], participant2: pair[1], judge: user.uid, winner: id })
         await update({ games: newGames })
     }
