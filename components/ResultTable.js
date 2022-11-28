@@ -47,7 +47,7 @@ export default function ResultTable(props) {
     }
 
     const table = [...Object.values(taskStats.stats).map(a => { return { ...a } })]
-    table.sort((a, b) => b.points - a.points)
+    table.sort((a, b) => b.score - a.score)
 
     if (props.markUser)
         if (table.findIndex(e => e.uid === selected) > 5) setSelected(null)
