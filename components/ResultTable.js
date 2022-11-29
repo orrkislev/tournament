@@ -58,8 +58,8 @@ export default function ResultTable(props) {
         row.color = `linear-gradient(30deg, ${clr}66 30%, ${clr}aa 90%)`
         if (props.withHover && hover && row.uid == hover[1]) row.color += 'black'
         row.showName = true
-        if (props.hideNames){
-            if (typeof(props.hideNames) == 'number' && i >= props.hideNames) {
+        if (props.hideNames) {
+            if (typeof (props.hideNames) == 'number' && i >= props.hideNames) {
                 row.showName = false
             }
             if (props.hideNames === true) row.showName = false
@@ -71,12 +71,12 @@ export default function ResultTable(props) {
         const selectedData = table.find(e => e.uid === selected)
         selectedData.color = '#888'
         if (!props.markUser) {
-            Object.keys(selectedData.opponents).forEach((opponentId,i) => {
+            Object.entries(selectedData.opponents).forEach((entry, i) => {
                 table.forEach(row => {
-                    if (opponentId === row.uid) {
-                        if (game.result === 'won') row.color += ', linear-gradient(90deg, transparent 70%, #55ff55 100%)'
-                        if (game.result === 'lost') row.color += ', linear-gradient(90deg, transparent 70%, #ff5555 100%)'
-                        if (game.result === 'tie') row.color += ', linear-gradient(90deg, transparent 70%, #5555ff 100%)'
+                    if (entry[0] === row.uid) {
+                        if (entry[1].result === 'won') row.color += ', linear-gradient(90deg, transparent 70%, #55ff55 100%)'
+                        if (entry[1].result === 'lost') row.color += ', linear-gradient(90deg, transparent 70%, #ff5555 100%)'
+                        if (entry[1].result === 'tie') row.color += ', linear-gradient(90deg, transparent 70%, #5555ff 100%)'
                     }
                 })
             })
@@ -86,15 +86,15 @@ export default function ResultTable(props) {
     const tableElement = (
         <>
             <TableContainer component={Paper}>
-                
+
                 {!props.hideActions && (
-                    <div style={{display:'flex',justifyContent:'end', fontSize:'0.7em', alignItems:'center', color:'gray'}}>
+                    <div style={{ display: 'flex', justifyContent: 'end', fontSize: '0.7em', alignItems: 'center', color: 'gray' }}>
                         Advanced
                         <Switch defaultChecked size="small" checked={showActions} onChange={(e) => setShowActions(e.target.checked)} />
                     </div>
                 )}
 
-                <Table size="small" style={{cursor:'pointer'}}>
+                <Table size="small" style={{ cursor: 'pointer' }}>
                     <TableHead>
                         <TableRow>
                             <TableCell>place</TableCell>
@@ -126,7 +126,7 @@ export default function ResultTable(props) {
                                 {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
                             </TableRow>
                         ))}
-                        {props.withHover && hover && <HoverAnswer top={hover[0]}>{taskData.data.answers[hover[1]].text}</HoverAnswer>}
+                        {props.withHover && hover && <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>{taskData.data.answers[hover[1]].text}</HoverAnswer>}
                     </TableBody>
                 </Table>
             </TableContainer>

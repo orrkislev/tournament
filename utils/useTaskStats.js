@@ -35,7 +35,8 @@ export default function useTaskStats() {
             opponents: {},
             judged: 0, won: 0, lost: 0, tie: 0, total: 0, score: 0,
             enabled: true, count: true, uid, email: taskData.data.answers[uid].email,
-            commented: taskData.data.answers[uid].leftComments ?? 0
+            commented: taskData.data.answers[uid].leftComments ?? 0,
+            seen: {}
         })
         Object.keys(filterData).forEach(uid => {
             newStats[uid].enabled = !filterData[uid].disable
@@ -52,6 +53,11 @@ export default function useTaskStats() {
 
             newStats[player1].opponents[player2] = { result: game.winner == 1 ? 'won' : game.winner == 2 ? 'lost' : 'tie', judge: game.judge }
             newStats[player2].opponents[player1] = { result: game.winner == 1 ? 'lost' : game.winner == 2 ? 'won' : 'tie', judge: game.judge }
+
+            if (!newStats[game.judge].seen[player1]) newStats[game.judge].seen[player1] = 0
+            if (!newStats[game.judge].seen[player2]) newStats[game.judge].seen[player2] = 0
+            newStats[game.judge].seen[player1]++
+            newStats[game.judge].seen[player2]++
         }
 
         Object.keys(newStats).forEach(uid => {
@@ -65,6 +71,15 @@ export default function useTaskStats() {
             })
         })
         setStats(newStats)
+
+        console.log('----')
+        Object.keys(newStats).forEach(uid => {
+            const judged = newStats[uid].judged
+            const seen = Object.keys(newStats[uid].seen).length
+            const maxSeen = Math.max(...Object.values(newStats[uid].seen))
+            const email = newStats[uid].email
+            console.log(`${email} judged ${judged} games, seen ${seen} players, max seen ${maxSeen} times`)
+        })
     }
 
     return {

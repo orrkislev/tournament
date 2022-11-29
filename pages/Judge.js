@@ -145,7 +145,7 @@ export default function Judge() {
 
     async function select(id) {
         await taskData.updateJudge(pair, id)
-        console.log('set saved',id)
+        console.log('set saved', id)
         setSaved(id)
     }
 
@@ -211,7 +211,7 @@ export default function Judge() {
 function JudgeAnswer(props) {
 
     let state = 'none'
-    if (props.disable){
+    if (props.disable) {
         state = 'disabled'
         if (props.selected) state = 'won'
         else state = 'lost'
@@ -226,13 +226,7 @@ function JudgeAnswer(props) {
 
 function AnswerComments(props) {
     const [comment, setComment] = useState('')
-    const [savedComment, setSavedComment] = useState(false)
     const taskData = useTaskData()
-
-    useEffect(() => {
-        setComment('')
-        setSavedComment(false)
-    }, [props.answer])
 
     if (props.tie) return <div></div>
 
@@ -242,12 +236,10 @@ function AnswerComments(props) {
 
     return (
         <SingleContainer>
-            {/* {props.addComment && !savedComment && ( */}
-                <CommentInputContainer>
-                    <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
-                    <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>
-                </CommentInputContainer>
-            {/* )} */}
+            <CommentInputContainer>
+                <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
+                <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>
+            </CommentInputContainer>
             {props.answer.comments.map((c, i) =>
                 < AnswerComment key={i} comment={c} />
             )}
