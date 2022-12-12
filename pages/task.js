@@ -5,15 +5,12 @@ import Manage from "./Manage"
 import Answer from "./answer"
 import Judge from "./Judge"
 import Task from "../components/Task"
-import { useRecoilValue } from "recoil"
-import { taskDataAtom, userDataAtom } from "../utils/atoms"
 import ResultTable from "../components/ResultTable"
 import TaskProgress from "../components/TaskProgress"
 
 export default function TaskPage() {
     const router = useRouter()
     const taskData = useTaskData()
-    const user = useRecoilValue(userDataAtom)
 
     useEffect(() => {
         if (router.query.id) taskData.load(router.query.id)
@@ -49,7 +46,7 @@ export default function TaskPage() {
                         asSection 
                         disableSelect 
                         hideActions 
-                        withHover={taskData.data.finishedJudging} />}
+                        withHover={false} />}
                 </>
             )}
         </>

@@ -68,7 +68,6 @@ export default function Home() {
 		getDocs(q2).then((querySnapshot) => {
 			const docs = [];
 			querySnapshot.forEach((doc) => {
-				console.log(doc.data().title)
 				docs.push({ taskID: doc.id, taskTitle: doc.data().title });
 			})
 			setAnswers(docs);

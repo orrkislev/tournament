@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { userDataAtom } from '../utils/atoms';
 import styled from 'styled-components';
 import useTaskData from '../utils/useTaskData';
+import Judge from '../pages/Judge';
 
 const HoverAnswer = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ export default function ResultTable(props) {
     const user = useRecoilValue(userDataAtom)
     const [selected, setSelected] = useState(null)
     const [hover, setHover] = useState(null)
-    const [showActions, setShowActions] = useState(props.hideActions ? false : true)
+    const [showActions, setShowActions] = useState(false)
 
     useEffect(() => {
         if (props.markUser) setSelected(user.uid)
@@ -126,7 +127,12 @@ export default function ResultTable(props) {
                                 {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
                             </TableRow>
                         ))}
-                        {props.withHover && hover && <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>{taskData.data.answers[hover[1]].text}</HoverAnswer>}
+                        {props.withHover && hover && 
+                            <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>
+                                { selected 
+                                ? <Judge game={{id1:selected, id2: hover[1]}} />
+                                : taskData.data.answers[hover[1]].text}
+                            </HoverAnswer>}
                     </TableBody>
                 </Table>
             </TableContainer>

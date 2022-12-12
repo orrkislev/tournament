@@ -14,7 +14,6 @@ export default function AdminUserSelect() {
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     useEffect(() => {
-        console.log('use effect')
         readDoc('other', 'adminUsers').then(dd => {
             const newUserData = { ...userData }
             if (dd.withFake.includes(user.email)) {
@@ -60,7 +59,6 @@ export default function AdminUserSelect() {
 
     if (!adminUsers.length) return null
 
-    console.log(userData)
     return (
         <>
             <Fab color="primary" aria-label="add" style={{ position: 'fixed', bottom: '3em', left: '3em' }} onClick={() => setDrawerOpen(true)}>

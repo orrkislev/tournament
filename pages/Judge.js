@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
-import { nextJudgeAtom, saveAnswerFlagAtom, userDataAtom } from "../utils/atoms"
+import { judgeAtom, nextJudgeAtom, userDataAtom } from "../utils/atoms"
 import useTaskData from "../utils/useTaskData"
 import Button from '@mui/material/Button';
 import styled from "styled-components";
@@ -79,37 +79,37 @@ const CommentSubmit = styled(Button)`
 
 
 
-export default function Judge() {
+export default function Judge(props) {
     const user = useRecoilValue(userDataAtom)
-    const [nextJudgeFlag, setNextJudgeFlag] = useRecoilState(nextJudgeAtom)
+    const [judgeData, setjudgeData] = useRecoilState(judgeAtom)
     const taskData = useTaskData()
-    const [pair, setPair] = useState(null)
-    const [done, setDone] = useState(false)
-    const [saved, setSaved] = useState(null)
 
     useEffect(() => {
-        setPair(null)
-        setDone(false)
-        newPair()
-    }, [user])
+        if (!props.game) newPair()
+        else {
+            let game = taskData.data.games.find(g => g.participant1 == props.game.id1 && g.participant2 == props.game.id2)
+            if (!game) game = taskData.data.games.find(g => g.participant1 == props.game.id2 && g.participant2 == props.game.id1)
+            if (game && game.winner != null) setjudgeData({ pair: [game.participant1, game.participant2], selected: game.winner, message: null, isDisplay: true, judge: game.judge })
+            else setjudgeData({ pair: null, selected: null, message: null, isDisplay: false })
+        }
+    }, [user, props])
 
     function newPair() {
-        setNextJudgeFlag(nextJudgeFlag + 1)
-        setSaved(null)
-        setPair(null)
+        const newJudgeData = { pair: null, selected: null, message: null, isDisplay: false }
 
         const myJudgedGames = taskData.data.games.filter(g => g.judge == user.uid)
         const answerCount = Object.keys(taskData.data.answers).length
         const maxGames = (answerCount - 1) / 2
         if (myJudgedGames.filter(g => 'winner' in g).length >= maxGames * 1.2) {
-            setDone('אין עוד משחקים לדירוג')
-            taskData.setData({ ...taskData.data, finishedJudging: true })
+            newJudgeData.message = 'אין עוד משחקים לדירוג'
+            setjudgeData(newJudgeData)
             return
         }
 
         const myUnjudgedGames = myJudgedGames.filter(g => !('winner' in g))
         if (myUnjudgedGames.length > 0) {
-            setPair([myUnjudgedGames[0].participant1, myUnjudgedGames[0].participant2])
+            newJudgeData.pair = [myUnjudgedGames[0].participant1, myUnjudgedGames[0].participant2]
+            setjudgeData(newJudgeData)
             return
         }
 
@@ -137,119 +137,101 @@ export default function Judge() {
             })
             const selectedPair = allPairings[0]
             taskData.startJudge(selectedPair)
-            setPair(selectedPair)
+            newJudgeData.pair = selectedPair
         } else {
-            setDone('אין עוד משחקים לדירוג')
-            taskData.setData({ ...taskData.data, finishedJudging: true })
+            newJudgeData.message = 'אין עוד משחקים לדירוג'
         }
-        setSaved(null)
+        setjudgeData(newJudgeData)
     }
 
-    async function select(id) {
-        await taskData.updateJudge(pair, id)
-        console.log('set saved', id)
-        setSaved(id)
-    }
 
-    function saveComment(id, comment) {
-        taskData.saveComment(pair[id], comment)
-    }
+
+    if (!judgeData) return null
+    if (judgeData.message) return (
+        <Section info title="שיפוט">
+            <div>{judgeData.message}</div>
+        </Section>
+    )
+    if (!judgeData.pair) return null
+
+
+    const judgingArea = (
+        <PairContainer>
+            <JudgeAnswer pairIndex={0} selectVal={1} />
+            <JudgeAnswer tie selectVal={0} />
+            <JudgeAnswer pairIndex={1} selectVal={2} />
+
+            <AnswerComments pairIndex={0} />
+            <AnswerComments tie />
+            <AnswerComments pairIndex={1} />
+        </PairContainer>
+    )
+
+    if (props.game) return (
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+            <div>judge: {taskData.data.answers[judgeData.judge].email}</div>
+            {judgingArea}
+        </div>
+    )
 
     return (
-        <Section action={done == false} info={done != false} title="שיפוט">
-            {done && <div>{done}</div>}
-
-            {pair && (
-                <>
-                    <PairContainer>
-                        <JudgeAnswer
-                            answer={taskData.data.answers[pair[0]]}
-                            onClick={() => select(1)}
-                            disable={saved != null}
-                            selected={saved == 1}
-                            onComment={txt => saveComment(0, txt)} />
-
-                        <JudgeAnswer
-                            answer={{ text: 'תיקו' }}
-                            onClick={() => select(0)}
-                            selected={saved == 0}
-                            disable={saved != null}
-                            tie />
-
-                        <JudgeAnswer
-                            answer={taskData.data.answers[pair[1]]}
-                            onClick={() => select(2)}
-                            disable={saved != null}
-                            selected={saved == 2}
-                            onComment={txt => saveComment(1, txt)} />
-
-                        <AnswerComments
-                            answer={taskData.data.answers[pair[0]]}
-                            id={pair[0]}
-                            addComment={saved != null}
-                        />
-
-                        <AnswerComments tie />
-
-                        <AnswerComments
-                            answer={taskData.data.answers[pair[1]]}
-                            id={pair[1]}
-                            addComment={saved != null}
-                        />
-
-
-                    </PairContainer>
-                </>
-
-            )}
-
-            {saved != null && <Button onClick={() => newPair()}>השיפוט הבא</Button>}
-
-
+        <Section action title="שיפוט">
+            {judgeData.pair && judgingArea}
+            {judgeData.selected != null && <Button onClick={() => newPair()}>השיפוט הבא</Button>}
         </Section>
     )
 }
 
 function JudgeAnswer(props) {
+    const taskData = useTaskData()
+    const [judgeData, setjudgeData] = useRecoilState(judgeAtom)
+
+    let answerText = 'תיקו'
+    if (props.pairIndex != null) answerText = taskData.data.answers[judgeData.pair[props.pairIndex]].text
 
     let state = 'none'
-    if (props.disable) {
+    if (judgeData.selected != null) {
         state = 'disabled'
-        if (props.selected) state = 'won'
+        if (judgeData.selected == props.selectVal) state = 'won'
         else state = 'lost'
     }
 
+    async function select(id) {
+        await taskData.updateJudge(judgeData.pair, props.selectVal)
+        setjudgeData({ ...judgeData, selected: props.selectVal })
+    }
+
     return (
-        <SingleContainer onClick={state == 'none' ? props.onClick : () => { }}>
-            <SingleText state={state}>{props.answer.text}</SingleText>
+        <SingleContainer onClick={state == 'none' ? select : () => { }}>
+            <SingleText state={state}>{answerText}</SingleText>
         </SingleContainer>
     )
 }
 
 function AnswerComments(props) {
     const [comment, setComment] = useState('')
-    const nextJudgeFlag = useRecoilValue(nextJudgeAtom)
+    const judgeData = useRecoilValue(judgeAtom)
     const taskData = useTaskData()
 
     if (props.tie) return <div></div>
 
-    useEffect(()=>{
-        setComment('')
-    },[nextJudgeFlag])
+    const answer = taskData.data.answers[judgeData.pair[props.pairIndex]]
 
     const clickComment = () => {
         if (comment == '') return
-        taskData.saveComment(props.id, comment)
+        taskData.saveComment(judgeData.pair[props.pairIndex], comment)
         setComment('')
     }
 
     return (
         <SingleContainer>
-            <CommentInputContainer>
-                <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
-                <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>
-            </CommentInputContainer>
-            {props.answer.comments.map((c, i) =>
+            {judgeData.isDisplay == false && (
+                <CommentInputContainer>
+                    <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
+                    <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>
+                </CommentInputContainer>
+            )}
+            {answer.comments.map((c, i) =>
                 < AnswerComment key={i} comment={c} />
             )}
         </SingleContainer>
