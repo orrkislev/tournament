@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { useRecoilValue } from "recoil"
-import { userDataAtom } from "../utils/atoms"
+import { useRecoilState, useRecoilValue } from "recoil"
+import { nextJudgeAtom, saveAnswerFlagAtom, userDataAtom } from "../utils/atoms"
 import useTaskData from "../utils/useTaskData"
 import Button from '@mui/material/Button';
 import styled from "styled-components";
@@ -81,6 +81,7 @@ const CommentSubmit = styled(Button)`
 
 export default function Judge() {
     const user = useRecoilValue(userDataAtom)
+    const [nextJudgeFlag, setNextJudgeFlag] = useRecoilState(nextJudgeAtom)
     const taskData = useTaskData()
     const [pair, setPair] = useState(null)
     const [done, setDone] = useState(false)
@@ -93,6 +94,7 @@ export default function Judge() {
     }, [user])
 
     function newPair() {
+        setNextJudgeFlag(nextJudgeFlag + 1)
         setSaved(null)
         setPair(null)
 
@@ -201,7 +203,7 @@ export default function Judge() {
 
             )}
 
-            {saved != null && <Button onClick={() => newPair()}>שיפוט הבא</Button>}
+            {saved != null && <Button onClick={() => newPair()}>השיפוט הבא</Button>}
 
 
         </Section>
@@ -226,12 +228,19 @@ function JudgeAnswer(props) {
 
 function AnswerComments(props) {
     const [comment, setComment] = useState('')
+    const nextJudgeFlag = useRecoilValue(nextJudgeAtom)
     const taskData = useTaskData()
 
     if (props.tie) return <div></div>
 
+    useEffect(()=>{
+        setComment('')
+    },[nextJudgeFlag])
+
     const clickComment = () => {
+        if (comment == '') return
         taskData.saveComment(props.id, comment)
+        setComment('')
     }
 
     return (

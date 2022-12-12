@@ -71,15 +71,6 @@ export default function useTaskStats() {
             })
         })
         setStats(newStats)
-
-        console.log('----')
-        Object.keys(newStats).forEach(uid => {
-            const judged = newStats[uid].judged
-            const seen = Object.keys(newStats[uid].seen).length
-            const maxSeen = Math.max(...Object.values(newStats[uid].seen))
-            const email = newStats[uid].email
-            console.log(`${email} judged ${judged} games, seen ${seen} players, max seen ${maxSeen} times`)
-        })
     }
 
     return {

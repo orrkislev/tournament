@@ -14,14 +14,20 @@ export default function AdminUserSelect() {
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     useEffect(() => {
+        console.log('use effect')
         readDoc('other', 'adminUsers').then(dd => {
+            const newUserData = { ...userData }
             if (dd.withFake.includes(user.email)) {
                 setAdminUsers(dd.users)
-                setUserData({ ...userData, origEmail: user.email, email: user.email })
+                newUserData.origEmail = user.email
+                newUserData.email = user.email
+                newUserData.origId = user.uid
+                newUserData.origName = user.displayName
             }
             if (dd.emails.includes(user.email)) {
-                setUserData({ ...userData, admin: true })
+                newUserData.admin = true
             }
+            setUserData(newUserData)
         })
     }, [user])
 
@@ -45,13 +51,16 @@ export default function AdminUserSelect() {
         updateDoc(getDocRef('other', 'adminUsers'), { users: newUsers })
     }
 
-    const selectUser = (user) => {
-        const newUserData = { ...userData, uid: user }
+    const selectUser = (id, email, name) => {
+        if (!email) email = id
+        if (!name) name = id
+        const newUserData = { ...userData, uid: id, email: email, name: name }
         setUserData(newUserData)
     }
 
     if (!adminUsers.length) return null
 
+    console.log(userData)
     return (
         <>
             <Fab color="primary" aria-label="add" style={{ position: 'fixed', bottom: '3em', left: '3em' }} onClick={() => setDrawerOpen(true)}>
@@ -59,11 +68,11 @@ export default function AdminUserSelect() {
             </Fab>
             <Drawer anchor={'left'} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
                 <div style={{ padding: '1em', display: 'flex', flexDirection: 'column' }}>
-                    {userData.origEmail && <Button onClick={() => selectUser(userData.origEmail)}>{user.displayName.split(' ')[0]}</Button>}
+                    {userData.origId && <Button onClick={() => selectUser(userData.origId, userData.origEmail, userData.origName)}>{user.displayName.split(' ')[0]}</Button>}
                     {adminUsers.map((user, i) => {
                         return <Button key={i} onClick={() => selectUser(user)}>{user}</Button>
                     })}
-                    <Button onClick={() => selectUser('Y0OLAeqDEyRb8M57GR9uLQglLr42')}>Shachar</Button>
+                    <Button onClick={() => selectUser('Y0OLAeqDEyRb8M57GR9uLQglLr42','freddy2000@gmail.com','Shachar')}>Shachar</Button>
                     <Button onClick={() => selectUser('aZfqXCEO3fZO90k8Qk6orvR62eT2')}>Yoni</Button>
                     <Button variant="outlined" onClick={addUser}>Add User</Button>
                 </div>
