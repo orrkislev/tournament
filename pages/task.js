@@ -38,15 +38,15 @@ export default function TaskPage() {
                 <Manage />
             ) : (
                 <>
-                    {taskData.data.phase == 2 && <Judge />}
+                    {taskData.data.phase == 2 && taskData.getLeagueProgress()!=100 && <Judge />}
                     <Answer />
-                    {taskData.data.phase != 1 && <ResultTable 
+                    {taskData.data.phase != 1 && <ResultTable
                         hideNames
-                        markUser 
-                        asSection 
-                        disableSelect 
-                        hideActions 
-                        withHover={false} />}
+                        markUser
+                        asSection
+                        disableSelect
+                        hideActions
+                        withHover={taskData.getLeagueProgress() == 100} />}
                 </>
             )}
         </>

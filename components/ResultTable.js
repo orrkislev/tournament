@@ -13,9 +13,9 @@ import Judge from '../pages/Judge';
 const HoverAnswer = styled.div`
     display: flex;
     position: absolute;
-    top: ${props => props.top}px;
-    left: 35vw;
-    width: 30vw;
+    top: ${props => props.top-400}px;
+    left: 0;
+    width: 50vw;
     padding: 1em;
     background-color: #ffffff;
     border-radius: 5px;
@@ -71,7 +71,7 @@ export default function ResultTable(props) {
     if (selected) {
         const selectedData = table.find(e => e.uid === selected)
         selectedData.color = '#888'
-        if (!props.markUser) {
+        if (!props.markUser || taskData.getLeagueProgress() == 100) {
             Object.entries(selectedData.opponents).forEach((entry, i) => {
                 table.forEach(row => {
                     if (entry[0] === row.uid) {

@@ -1,7 +1,8 @@
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { saveAnswerFlagAtom, taskDataAtom, userDataAtom } from "./atoms";
 import { getDocRef } from "./firebaseConfig";
+
 
 export default function useTaskData() {
     const [data, setData] = useRecoilState(taskDataAtom);
@@ -60,11 +61,20 @@ export default function useTaskData() {
         await deleteDoc(docRef)
     }
 
+    function getLeagueProgress(){
+        const sumAnswers = Object.values(data.answers).length
+        const totalGames = .5 * sumAnswers * (sumAnswers - 1)
+        const sumGames = data.games.length
+        const perc = Math.round(sumGames / totalGames * 100)
+        return perc
+    }
+
 
     return {
         data, setData, reset, load, update, remove,
         userOwnsTask, userAnsweredTask, saveAnswer, saveComment,
         startJudge, updateJudge, 
+        getLeagueProgress,
     }
 
 }

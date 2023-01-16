@@ -167,12 +167,15 @@ export default function Judge(props) {
         </PairContainer>
     )
 
-    if (props.game) return (
-        <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
-            <div>judge: {taskData.data.answers[judgeData.judge].email}</div>
-            {judgingArea}
-        </div>
-    )
+    if (props.game) {
+        if (!judgeData) return null
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div>judge: {taskData.data.answers[judgeData.judge].email}</div>
+                {judgingArea}
+            </div>
+        )
+    }
 
     return (
         <Section action title="שיפוט">
