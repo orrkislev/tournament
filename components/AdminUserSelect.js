@@ -72,6 +72,7 @@ export default function AdminUserSelect() {
                     })}
                     <Button onClick={() => selectUser('Y0OLAeqDEyRb8M57GR9uLQglLr42','freddy2000@gmail.com','Shachar')}>Shachar</Button>
                     <Button onClick={() => selectUser('aZfqXCEO3fZO90k8Qk6orvR62eT2')}>Yoni</Button>
+                    <Button onClick={() => selectUser('B1nb8srOiyP6d75lxxCtxzQBU892')}>Ruth</Button>
                     <Button variant="outlined" onClick={addUser}>Add User</Button>
                 </div>
             </Drawer>

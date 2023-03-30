@@ -24,6 +24,7 @@ export default function useTaskData() {
     }
     async function update(updateData) {
         const docRef = getDocRef('tasks', data.id)
+        updateData.lastUpdate = new Date()
         await updateDoc(docRef, updateData)
     }
 

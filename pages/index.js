@@ -62,6 +62,9 @@ export default function Home() {
 			querySnapshot.forEach((doc) => {
 				docs.push({ ...doc.data(), id: doc.id });
 			})
+			docs.sort((a, b) => a.lastUpdate < b.lastUpdate ? 1 : -1)
+			docs.sort((a, b) => a.lastUpdate == undefined ? 1 : -1)
+
 			setOwnTasks(docs);
 		});
 		const q2 = query(collection(firestore, "tasks"), where("answers." + user.uid, "!=", ""));
@@ -119,6 +122,7 @@ function IndexOwnedTask({ doc }) {
 	return (
 		<ListItem onClick={() => gotoTask(doc.id)}>
 			<ListItemRight>
+				{/* {doc.lastUpdate ? doc.lastUpdate.toDate().toLocaleDateString() : ""} */}
 				<ListItemTitle>{doc.title}</ListItemTitle>
 				<div>{doc.text}</div>
 			</ListItemRight>

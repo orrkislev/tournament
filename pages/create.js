@@ -24,10 +24,10 @@ export default function Create(props) {
 
     useEffect(() => {
         if (props.edit) {
-            setText(taskData.data.text)
-            setTitle(taskData.data.title)
+            setText(props.text)
+            setTitle(props.title)
         }
-    }, [taskData])
+    }, [props])
 
     const save = async () => {
         if (props.edit) {

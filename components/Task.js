@@ -20,12 +20,13 @@ export default function Task(props) {
     const taskData = useTaskData()
     const [edit, setEdit] = useState(false)
 
-    if (edit) return <Create edit onFinish={() => setEdit(false)} />
+    if (edit) return <Create edit onFinish={() => setEdit(false)} title={taskData.data.title} text={taskData.data.text} />
 
-    const sideContent = (taskData.data.phase == 1 && Object.keys(taskData.data.answers).length == 0) ? (<Button onClick={() => setEdit(true)}>ערוך</Button>) : null
+    // const sideContent = (taskData.data.phase == 1 && Object.keys(taskData.data.answers).length == 0) ? (<Button onClick={() => setEdit(true)}>ערוך</Button>) : null
+    const sideContent = (<Button onClick={() => setEdit(true)}>ערוך</Button>)
 
     return (
-        <Section title="משימה" sideContent>
+        <Section title="משימה" sideContent={sideContent}>
             <TaskTitle>{taskData.data.title}</TaskTitle>
             <TaskText>{taskData.data.text}</TaskText>
         </Section>
