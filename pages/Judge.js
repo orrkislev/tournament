@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
-import { judgeAtom, nextJudgeAtom, userDataAtom } from "../utils/atoms"
+import { judgeAtom, userDataAtom } from "../utils/atoms"
 import useTaskData from "../utils/useTaskData"
 import Button from '@mui/material/Button';
 import styled from "styled-components";
 import Section from "../components/Section";
 import { AccountCircle } from "@mui/icons-material";
 import CheckIcon from '@mui/icons-material/Check';
+import useResponsive from "../utils/useResponsive";
+import useGame from "../utils/useGame";
 
 const PairContainer = styled.div`
     display: grid;
     grid-template-columns: 7fr 1fr 7fr;
     gap: 0.3rem;
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
     `;
 const SingleContainer = styled.div`
     display: flex;
@@ -32,6 +38,12 @@ const SingleText = styled.div`
     border-radius: 5px;
     cursor: pointer;
     white-space: pre-line;
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        padding: 0.5em;
+        min-height: 0;
+    }
 
     &:hover { background-color: #777; }
     ${props => props.state == 'won' && `
@@ -80,98 +92,49 @@ const CommentSubmit = styled(Button)`
 
 
 export default function Judge(props) {
-    const user = useRecoilValue(userDataAtom)
-    const [judgeData, setjudgeData] = useRecoilState(judgeAtom)
+    const game = useGame()
     const taskData = useTaskData()
+    const responsive = useResponsive()
 
     useEffect(() => {
-        if (!props.game) newPair()
-        else {
-            let game = taskData.data.games.find(g => g.participant1 == props.game.id1 && g.participant2 == props.game.id2)
-            if (!game) game = taskData.data.games.find(g => g.participant1 == props.game.id2 && g.participant2 == props.game.id1)
-            if (game && game.winner != null) setjudgeData({ pair: [game.participant1, game.participant2], selected: game.winner, message: null, isDisplay: true, judge: game.judge })
-            else setjudgeData({ pair: null, selected: null, message: null, isDisplay: false })
-        }
-    }, [user, props])
-
-    function newPair() {
-        const newJudgeData = { pair: null, selected: null, message: null, isDisplay: false }
-
-        const myJudgedGames = taskData.data.games.filter(g => g.judge == user.uid)
-        const answerCount = Object.keys(taskData.data.answers).length
-        const maxGames = (answerCount - 1) / 2
-        if (myJudgedGames.filter(g => 'winner' in g).length >= maxGames * 1.2) {
-            newJudgeData.message = 'אין עוד משחקים לדירוג'
-            setjudgeData(newJudgeData)
-            return
-        }
-
-        const myUnjudgedGames = myJudgedGames.filter(g => !('winner' in g))
-        if (myUnjudgedGames.length > 0) {
-            newJudgeData.pair = [myUnjudgedGames[0].participant1, myUnjudgedGames[0].participant2]
-            setjudgeData(newJudgeData)
-            return
-        }
+        if (props.game) game.setGame(props.game)
+        else if (!game.data) game.getGame()
+    }, [props])
 
 
-        const allPairings = []
-        const students = Object.keys(taskData.data.answers).filter(uid => uid !== user.uid)
-        for (let i = 0; i < students.length; i++) {
-            for (let j = i + 1; j < students.length; j++) {
-                if (taskData.data.games.find(game => game.participant1 == students[i] && game.participant2 == students[j])) continue
-                if (taskData.data.games.find(game => game.participant1 == students[j] && game.participant2 == students[i])) continue
-                allPairings.push([students[i], students[j]])
-            }
-        }
-        if (allPairings.length > 0) {
-            const seenPlayers = new Set()
-            myJudgedGames.forEach(g => {
-                seenPlayers.add(g.participant1)
-                seenPlayers.add(g.participant2)
-            })
-            allPairings.sort((a, b) => {
-                const aSeen = seenPlayers.has(a[0]) + seenPlayers.has(a[1])
-                const bSeen = seenPlayers.has(b[0]) + seenPlayers.has(b[1])
-                if (aSeen == bSeen) return Math.random() - 0.5
-                return aSeen - bSeen
-            })
-            const selectedPair = allPairings[0]
-            taskData.startJudge(selectedPair)
-            newJudgeData.pair = selectedPair
-        } else {
-            newJudgeData.message = 'אין עוד משחקים לדירוג'
-        }
-        setjudgeData(newJudgeData)
-    }
-
-
-
-    if (!judgeData) return null
-    if (judgeData.message) return (
+    if (game.message) return (
         <Section info title="שיפוט">
-            <div>{judgeData.message}</div>
+            <div>{game.message}</div>
         </Section>
     )
-    if (!judgeData.pair) return null
+    if (!game.data) return null
 
 
     const judgingArea = (
         <PairContainer>
-            <JudgeAnswer pairIndex={0} selectVal={1} />
-            <JudgeAnswer tie selectVal={0} />
-            <JudgeAnswer pairIndex={1} selectVal={2} />
+            <JudgeAnswer data={game.data.first} />
+            <JudgeAnswer tie />
+            <JudgeAnswer data={game.data.second} />
 
-            <AnswerComments pairIndex={0} />
-            <AnswerComments tie />
-            <AnswerComments pairIndex={1} />
+            {responsive.isMobile && game.readyToSubmit() &&
+                <Button onClick={() => game.submitWinner()}>שלח</Button>
+            }
+
+            {responsive.isDesktop && (
+                <>
+                    <AnswerComments id={game.data.first.id} />
+                    <AnswerComments tie />
+                    <AnswerComments id={game.data.second.id} />
+                </>
+            )}
         </PairContainer>
     )
 
     if (props.game) {
-        if (!judgeData) return null
+        if (!game.data) return null
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div>judge: {taskData.data.answers[judgeData.judge].email}</div>
+                {taskData.data.answers[game.judge] && <div>judge: {taskData.data.answers[game.judge].email}</div>}
                 {judgingArea}
             </div>
         )
@@ -179,33 +142,25 @@ export default function Judge(props) {
 
     return (
         <Section action title="שיפוט">
-            {judgeData.pair && judgingArea}
-            {judgeData.selected != null && <Button onClick={() => newPair()}>השיפוט הבא</Button>}
+            {judgingArea}
+            {game.isDone() && <Button onClick={() => game.getGame()}>השיפוט הבא</Button>}
         </Section>
     )
 }
 
 function JudgeAnswer(props) {
-    const taskData = useTaskData()
-    const [judgeData, setjudgeData] = useRecoilState(judgeAtom)
+    const game = useGame()
 
-    let answerText = 'תיקו'
-    if (props.pairIndex != null) answerText = taskData.data.answers[judgeData.pair[props.pairIndex]].text
-
-    let state = 'none'
-    if (judgeData.selected != null) {
-        state = 'disabled'
-        if (judgeData.selected == props.selectVal) state = 'won'
-        else state = 'lost'
+    async function select() {
+        game.select(props.data?.id || 'tie')
     }
 
-    async function select(id) {
-        await taskData.updateJudge(judgeData.pair, props.selectVal)
-        setjudgeData({ ...judgeData, selected: props.selectVal })
-    }
+    let answerText = props.data ? props.data.text : 'תיקו'
+    let state = props.data?.state || 'none'
+    if (props.tie) state = game.data.tie || 'none'
 
     return (
-        <SingleContainer onClick={state == 'none' ? select : () => { }}>
+        <SingleContainer onClick={select}>
             <SingleText state={state}>{answerText}</SingleText>
         </SingleContainer>
     )
@@ -213,22 +168,23 @@ function JudgeAnswer(props) {
 
 function AnswerComments(props) {
     const [comment, setComment] = useState('')
-    const judgeData = useRecoilValue(judgeAtom)
+    const game = useGame()
     const taskData = useTaskData()
 
     if (props.tie) return <div></div>
+    if (!props.id) return <div></div>
 
-    const answer = taskData.data.answers[judgeData.pair[props.pairIndex]]
+    const answer = taskData.data.answers[props.id]
 
     const clickComment = () => {
         if (comment == '') return
-        taskData.saveComment(judgeData.pair[props.pairIndex], comment)
+        taskData.saveComment(props.id, comment)
         setComment('')
     }
 
     return (
         <SingleContainer>
-            {judgeData.isDisplay == false && (
+            {game.isDisplay == false && (
                 <CommentInputContainer>
                     <CommentInput value={comment} onChange={e => setComment(e.target.value)} placeholder="הוסף הערה" />
                     <CommentSubmit onClick={clickComment}><CheckIcon /></CommentSubmit>

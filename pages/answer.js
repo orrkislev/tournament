@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import useTaskData from "../utils/useTaskData"
-import styled, { keyframes, css } from 'styled-components'
+import styled from 'styled-components'
 import { useRecoilValue } from "recoil";
 import { userDataAtom } from "../utils/atoms";
 import { Button } from "../styles/Styles"

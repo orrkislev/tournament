@@ -32,10 +32,12 @@ export default function TaskPage() {
         <>
             <Task />
 
-            <TaskProgress />
 
             {permit == 'teacher' ? (
-                <Manage />
+                <>
+                    <TaskProgress />
+                    <Manage />
+                </>
             ) : (
                 <>
                     {taskData.data.phase == 2 && taskData.getLeagueProgress()!=100 && <Judge />}

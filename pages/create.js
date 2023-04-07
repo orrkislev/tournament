@@ -45,7 +45,7 @@ export default function Create(props) {
     return (
         <Section action title={props.edit ? "עריכה" : "משימה חדשה"} sideContent={props.edit ? <Button onClick={props.onFinish}>ביטול</Button> : null} >
             <CreateContainer>
-                <TextField fullWidth placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <TextField style={{boxSizing:'border-box'}} fullWidth placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
                 <TextField fullWidth placeholder="Text" value={text} onChange={(e) => setText(e.target.value)} />
                 <Button onClick={save}>save</Button>
             </CreateContainer>

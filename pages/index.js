@@ -1,15 +1,11 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userDataAtom } from "../utils/atoms";
-import { auth, firestore, getUser, readDoc } from "../utils/firebaseConfig";
+import { firestore, getUser } from "../utils/firebaseConfig";
 
-import { Grid, Card } from "@mui/material";
 import styled from "styled-components";
-import { SimpleLink, SimpleTitle } from "../styles/Styles";
-import { adminEmails } from "../components/AdminUserSelect";
 
 const IndexList = styled.div`
   display: flex;
@@ -124,16 +120,19 @@ function IndexOwnedTask({ doc }) {
 			<ListItemRight>
 				{/* {doc.lastUpdate ? doc.lastUpdate.toDate().toLocaleDateString() : ""} */}
 				<ListItemTitle>{doc.title}</ListItemTitle>
-				<div>{doc.text}</div>
+				<div className="only-desktop">{doc.text}</div>
 			</ListItemRight>
 			<ListItemLeft>
-				<div>
+				<div className='only-desktop'>
 					{numAnswers == 0 ?
 						`אף אחד עדיין לא ענה על השאלון.`
 						: numAnswers == 1 ?
 							`ענה עד כה אחד על השאלה`
 							: `ענו עד כה ${numAnswers} על השאלה`
 					}
+				</div>
+				<div className='only-mobile'>
+					{numAnswers}
 				</div>
 			</ListItemLeft>
 		</ListItem>

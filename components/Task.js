@@ -1,9 +1,7 @@
-import EditIcon from '@mui/icons-material/Edit';
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Create from '../pages/create';
 import { Button } from '../styles/Styles';
-import useClickOutside from "../utils/useClickOutside";
 import useTaskData from "../utils/useTaskData"
 import Section from './Section';
 
@@ -23,7 +21,10 @@ export default function Task(props) {
     if (edit) return <Create edit onFinish={() => setEdit(false)} title={taskData.data.title} text={taskData.data.text} />
 
     // const sideContent = (taskData.data.phase == 1 && Object.keys(taskData.data.answers).length == 0) ? (<Button onClick={() => setEdit(true)}>ערוך</Button>) : null
-    const sideContent = (<Button onClick={() => setEdit(true)}>ערוך</Button>)
+    const sideContent = 
+        taskData.userOwnsTask() ?
+            (<Button onClick={() => setEdit(true)}>ערוך</Button>)
+        : null
 
     return (
         <Section title="משימה" sideContent={sideContent}>

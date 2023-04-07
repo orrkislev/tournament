@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { taskDataAtom, userDataAtom } from "../utils/atoms";
+import { userDataAtom } from "../utils/atoms";
 import styled from "styled-components";
 import { signOut } from "../utils/firebaseConfig";
 import { useRouter } from "next/router";
@@ -11,6 +11,9 @@ const HeaderDiv = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    @media (max-width: 768px) {
+        margin-bottom: 1rem;
+    }
     `;
 const HeaderRight = styled.div`
     display: flex;
@@ -35,15 +38,17 @@ export default function Header() {
 
 
     return (
-        <HeaderDiv>
-            <HeaderRight>
-                <Button onClick={home}>הליגה</Button>
-                {taskData.data && <div>{taskData.data.title}</div>}
-            </HeaderRight>
+        <>
+            <HeaderDiv>
+                <HeaderRight>
+                    <Button onClick={home}>הליגה</Button>
+                    {taskData.data && <div className="only-desktop">{taskData.data.title}</div>}
+                </HeaderRight>
 
-            <HeaderLeft>
-                <Button onClick={signOut}>{user.email}</Button>
-            </HeaderLeft>
-        </HeaderDiv>
+                <HeaderLeft>
+                    <Button onClick={signOut}>{user.email}</Button>
+                </HeaderLeft>
+            </HeaderDiv>
+        </>
     )
 }

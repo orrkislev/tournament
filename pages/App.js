@@ -16,6 +16,9 @@ const MainContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    @media (max-width: 768px) {
+        gap: 0.5rem;
+    }
     `;
 
 export default function App(props) {

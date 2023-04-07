@@ -9,11 +9,12 @@ import { userDataAtom } from '../utils/atoms';
 import styled from 'styled-components';
 import useTaskData from '../utils/useTaskData';
 import Judge from '../pages/Judge';
+import useResponsive from '../utils/useResponsive';
 
 const HoverAnswer = styled.div`
     display: flex;
     position: absolute;
-    top: ${props => props.top-400}px;
+    top: ${props => props.top - 400}px;
     left: 0;
     width: 50vw;
     padding: 1em;
@@ -30,10 +31,13 @@ export default function ResultTable(props) {
     const [selected, setSelected] = useState(null)
     const [hover, setHover] = useState(null)
     const [showActions, setShowActions] = useState(false)
+    const responsive = useResponsive()
 
     useEffect(() => {
         if (props.markUser) setSelected(user.uid)
     }, [props])
+
+    if (responsive.isMobile) return null
 
     const select = (uid) => {
         if (props.disableSelect) return
@@ -85,58 +89,56 @@ export default function ResultTable(props) {
     }
 
     const tableElement = (
-        <>
-            <TableContainer component={Paper}>
+        <TableContainer component={Paper}>
 
-                {!props.hideActions && (
-                    <div style={{ display: 'flex', justifyContent: 'end', fontSize: '0.7em', alignItems: 'center', color: 'gray' }}>
-                        Advanced
-                        <Switch defaultChecked size="small" checked={showActions} onChange={(e) => setShowActions(e.target.checked)} />
-                    </div>
-                )}
+            {!props.hideActions && (
+                <div style={{ display: 'flex', justifyContent: 'end', fontSize: '0.7em', alignItems: 'center', color: 'gray' }}>
+                    Advanced
+                    <Switch defaultChecked size="small" checked={showActions} onChange={(e) => setShowActions(e.target.checked)} />
+                </div>
+            )}
 
-                <Table size="small" style={{ cursor: 'pointer' }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>place</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell align="right">judged</TableCell>
-                            <TableCell align="right">commented</TableCell>
-                            <TableCell align="right">won</TableCell>
-                            <TableCell align="right">lost</TableCell>
-                            <TableCell align="right">draw</TableCell>
-                            <TableCell align="right">games</TableCell>
-                            <TableCell align="right">points</TableCell>
-                            {showActions && <TableCell align="right">enable</TableCell>}
-                            {showActions && <TableCell align="right">count judge</TableCell>}
+            <Table size="small" style={{ cursor: 'pointer' }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>place</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell align="right">judged</TableCell>
+                        <TableCell align="right">commented</TableCell>
+                        <TableCell align="right">won</TableCell>
+                        <TableCell align="right">lost</TableCell>
+                        <TableCell align="right">draw</TableCell>
+                        <TableCell align="right">games</TableCell>
+                        <TableCell align="right">points</TableCell>
+                        {showActions && <TableCell align="right">enable</TableCell>}
+                        {showActions && <TableCell align="right">count judge</TableCell>}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {table.map((row, i) => (
+                        <TableRow key={row.uid} style={{ background: row.color }} onClick={() => select(row.uid)} >
+                            <TableCell component="th" scope="row"> {i + 1} </TableCell>
+                            <TableCell onMouseEnter={(e) => setHover([e.pageY, row.uid])} onMouseLeave={() => setHover(null)}> {row.showName ? row.email : '****'} </TableCell>
+                            <TableCell align="center">{row.judged}</TableCell>
+                            <TableCell align="center">{row.commented}</TableCell>
+                            <TableCell align="center">{row.won}</TableCell>
+                            <TableCell align="center">{row.lost}</TableCell>
+                            <TableCell align="center">{row.tie}</TableCell>
+                            <TableCell align="center">{row.total}</TableCell>
+                            <TableCell align="center">{row.score}</TableCell>
+                            {showActions && <TableCell align="center"><GiteIcon color={row.enabled ? 'nonw' : 'warning'} onClick={() => taskStats.filterEnable(row.uid)} /></TableCell>}
+                            {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {table.map((row, i) => (
-                            <TableRow key={row.uid} style={{ background: row.color }} onClick={() => select(row.uid)} >
-                                <TableCell component="th" scope="row"> {i + 1} </TableCell>
-                                <TableCell onMouseEnter={(e) => setHover([e.pageY, row.uid])} onMouseLeave={() => setHover(null)}> {row.showName ? row.email : '****'} </TableCell>
-                                <TableCell align="center">{row.judged}</TableCell>
-                                <TableCell align="center">{row.commented}</TableCell>
-                                <TableCell align="center">{row.won}</TableCell>
-                                <TableCell align="center">{row.lost}</TableCell>
-                                <TableCell align="center">{row.tie}</TableCell>
-                                <TableCell align="center">{row.total}</TableCell>
-                                <TableCell align="center">{row.score}</TableCell>
-                                {showActions && <TableCell align="center"><GiteIcon color={row.enabled ? 'nonw' : 'warning'} onClick={() => taskStats.filterEnable(row.uid)} /></TableCell>}
-                                {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
-                            </TableRow>
-                        ))}
-                        {props.withHover && hover && 
-                            <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>
-                                { selected 
-                                ? <Judge game={{id1:selected, id2: hover[1]}} />
+                    ))}
+                    {props.withHover && hover &&
+                        <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>
+                            {selected
+                                ? <Judge game={{ id1: selected, id2: hover[1] }} />
                                 : taskData.data.answers[hover[1]].text}
-                            </HoverAnswer>}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
+                        </HoverAnswer>}
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 
 

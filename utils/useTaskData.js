@@ -1,14 +1,14 @@
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
-import { saveAnswerFlagAtom, taskDataAtom, userDataAtom } from "./atoms";
+import { userDataAtom } from "./atoms";
 import { getDocRef } from "./firebaseConfig";
 
-
+export const taskDataAtom = atom({ key: 'taskData', default: null });
 export default function useTaskData() {
     const [data, setData] = useRecoilState(taskDataAtom);
     const user = useRecoilValue(userDataAtom)
 
-    function reset(){
+    function reset() {
         setData(null)
     }
 
@@ -45,24 +45,12 @@ export default function useTaskData() {
         update({ answers: newAnswers })
     }
 
-    function startJudge(pair) {
-        const newGames = [...data.games, { participant1: pair[0], participant2: pair[1], judge: user.uid }]
-        update({ games: newGames })
-    }
-    async function updateJudge(pair, id) {
-        const newGames = data.games.filter(g => (
-            !(g.participant1 == pair[0] && g.participant2 == pair[1]) &&
-            !(g.participant1 == pair[1] && g.participant2 == pair[0])))
-        newGames.push({ participant1: pair[0], participant2: pair[1], judge: user.uid, winner: id })
-        await update({ games: newGames })
-    }
-
-    async function remove(){
+    async function remove() {
         const docRef = getDocRef('tasks', data.id)
         await deleteDoc(docRef)
     }
 
-    function getLeagueProgress(){
+    function getLeagueProgress() {
         const sumAnswers = Object.values(data.answers).length
         const totalGames = .5 * sumAnswers * (sumAnswers - 1)
         const sumGames = data.games.length
@@ -71,10 +59,10 @@ export default function useTaskData() {
     }
 
 
+
     return {
         data, setData, reset, load, update, remove,
         userOwnsTask, userAnsweredTask, saveAnswer, saveComment,
-        startJudge, updateJudge, 
         getLeagueProgress,
     }
 

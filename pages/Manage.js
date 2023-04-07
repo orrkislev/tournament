@@ -1,11 +1,9 @@
 import useTaskData from "../utils/useTaskData"
-import { Button, SectionSideTitle } from "../styles/Styles";
+import { Button } from "../styles/Styles";
 import ResultTable from "../components/ResultTable";
-import Task from "../components/Task";
 import { useState } from "react";
 import ResultDetails from "../components/ResultDetails";
 import Section from "../components/Section";
-import Judge from "./Judge";
 
 export default function Manage() {
     const taskData = useTaskData()

@@ -1,7 +1,7 @@
-import { Container, AppBar, Typography, Toolbar, IconButton } from "@mui/material"
+import { AppBar, Typography, Toolbar, IconButton } from "@mui/material"
 import { useRecoilValue } from "recoil"
 import { userDataAtom } from "../utils/atoms"
-import { getUser, signOut } from "../utils/firebaseConfig"
+import { signOut } from "../utils/firebaseConfig"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function Main(props) {

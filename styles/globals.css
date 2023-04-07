@@ -18,3 +18,19 @@ body {
     margin: 3em;
     direction: rtl;
 }
+
+
+@media (max-width: 640px) {
+    body{
+        margin: 0.5em;
+    }
+    .only-desktop {
+        display: none;
+    }
+}
+
+@media (min-width: 641px) {
+    .only-mobile {
+        display: none;
+    }
+}
