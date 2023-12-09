@@ -90,7 +90,7 @@ export default function useGame() {
             taskData.update({ games: newGames })
 
             setData({ first: { id: selectedPair[0] }, second: { id: selectedPair[1] } })
-            setActive(true)
+            // setActive(true)
         } else {
             setMessage('אין עוד משחקים לדירוג')
         }

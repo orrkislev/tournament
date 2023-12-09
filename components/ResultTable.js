@@ -14,9 +14,8 @@ import useResponsive from '../utils/useResponsive';
 const HoverAnswer = styled.div`
     display: flex;
     position: absolute;
-    top: ${props => props.top - 400}px;
-    left: 0;
-    width: 50vw;
+    bottom: 100%;
+    right: 0;
     padding: 1em;
     background-color: #ffffff;
     border-radius: 5px;
@@ -89,7 +88,7 @@ export default function ResultTable(props) {
     }
 
     const tableElement = (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{position:'relative', overflow:'visible'}}>
 
             {!props.hideActions && (
                 <div style={{ display: 'flex', justifyContent: 'end', fontSize: '0.7em', alignItems: 'center', color: 'gray' }}>
@@ -130,14 +129,15 @@ export default function ResultTable(props) {
                             {showActions && <TableCell align="center"><BeachAccessIcon color={row.count ? 'nonw' : 'warning'} onClick={() => taskStats.filterCount(row.uid)} /></TableCell>}
                         </TableRow>
                     ))}
-                    {props.withHover && hover &&
-                        <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>
-                            {selected
-                                ? <Judge game={{ id1: selected, id2: hover[1] }} />
-                                : taskData.data.answers[hover[1]].text}
-                        </HoverAnswer>}
+
                 </TableBody>
             </Table>
+            {props.withHover && hover &&
+                <HoverAnswer top={hover[0]} style={{ whiteSpace: 'pre-line' }}>
+                    {selected
+                        ? <Judge game={{ id1: selected, id2: hover[1] }} />
+                        : taskData.data.answers[hover[1]].text}
+                </HoverAnswer>}
         </TableContainer>
     )
 

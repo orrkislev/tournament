@@ -51,8 +51,10 @@ export default function useTaskStats() {
             if (!newStats[game.participant1].enabled || !newStats[player2].enabled) continue
             if (!newStats[game.judge].count) continue
 
-            newStats[player1].opponents[player2] = { result: game.winner == 1 ? 'won' : game.winner == 2 ? 'lost' : 'tie', judge: game.judge }
-            newStats[player2].opponents[player1] = { result: game.winner == 1 ? 'lost' : game.winner == 2 ? 'won' : 'tie', judge: game.judge }
+            newStats[player1].opponents[player2] = { 
+                result: (game.winner == 1 || game.winner == player1) ? 'won' : (game.winner == 2 || game.winner == player2) ? 'lost' : 'tie', judge: game.judge }
+            newStats[player2].opponents[player1] = { 
+                result: (game.winner == 1 || game.winner == player1) ? 'lost' : (game.winner == 2 || game.winner == player2) ? 'won' : 'tie', judge: game.judge }
 
             if (!newStats[game.judge].seen[player1]) newStats[game.judge].seen[player1] = 0
             if (!newStats[game.judge].seen[player2]) newStats[game.judge].seen[player2] = 0
