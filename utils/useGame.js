@@ -105,8 +105,8 @@ export default function useGame() {
         if (newGameData && newGameData.winner != null) {
             newData = { first: { id: newGameData.participant1, state: 'lost' }, second: { id: newGameData.participant2, state: 'lost' }, tie: 'lost' }
             if (newGameData.winner == 0) newData.tie = 'won'
-            if (newGameData.winner == 1) newData.first.state = 'won'
-            if (newGameData.winner == 2) newData.second.state = 'won'
+            if (newGameData.winner == 1 || newGameData.winner == newGameData.participant1) newData.first.state = 'won'
+            if (newGameData.winner == 2 || newGameData.winner == newGameData.participant2) newData.second.state = 'won'
             newData.active = false
             setData(newData)
             setMessage(null)
